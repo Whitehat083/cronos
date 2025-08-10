@@ -1367,20 +1367,61 @@ main {
 .path-cta.premium-cta {
     background: var(--c-primary); color: #0A0F1A;
 }
+===================================================== */
+/* ====== RESPONSIVIDADE FINAL PARA ESTAÇÃO GÊNESE (PROCESSO) ======== */
+/* ========================================================================= */
 
-/* Responsividade da Bifurcação */
 @media (max-width: 768px) {
   
-    /* Aplicamos o estilo diretamente ao container pai para sermos específicos */
+    /* --- Parte 1: Ajusta a Timeline do Processo --- */
+
     .process-timeline-ai {
-        flex-direction: column; /* Força o empilhamento dos cards de passo */
-        align-items: stretch; /* Faz os cards ocuparem a largura total */
+        flex-direction: column;
+        align-items: stretch;
         gap: 20px;
     }
 
+    .process-timeline-ai .process-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px 25px;
+        flex-basis: auto;
+        width: 100%;
+    }
     
-}
+    .process-timeline-ai .step-icon-wrapper {
+        margin: 0 0 1.5rem 0;
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+    }
+    
+    .process-timeline-ai .step-number { font-size: 2rem; }
+    .process-timeline-ai .step-content h4 { font-size: 1.4rem; margin-bottom: 0.75rem; }
+    .process-timeline-ai .step-content p { font-size: 1rem; }
+    
+    .process-connector {
+        flex-grow: 0; height: 60px; width: 2px;
+        align-self: center; margin: 10px 0;
+    }
+    .process-connector::before {
+        width: 2px; height: 100%;
+        background: linear-gradient(180deg, transparent, var(--c-primary), transparent);
+        transform: translateY(-100%);
+        animation-name: data-flow-vertical;
+    }
+    @keyframes data-flow-vertical {
+        0% { transform: translateY(-100%); } 100% { transform: translateY(100%); }
+    }
 
+    /* --- Parte 2: Ajusta a Grade de Escolha da Bifurcação --- */
+
+    .path-choices-grid {
+        grid-template-columns: 1fr; /* Muda o grid de duas colunas para uma só */
+    }
+}
 
 /* --- Configuração Principal da Seção --- */
 #process {
