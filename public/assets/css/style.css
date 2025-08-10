@@ -1370,26 +1370,6 @@ main {
 
 /* Responsividade da Bifurcação */
 @media (max-width: 768px) {
-  .process-step {
-        /* MUDANÇA PRINCIPAL: De 'flex-start' (linha) para 'column' (coluna) */
-        display: flex;
-        flex-direction: column; /* <<< Esta é a linha mais importante */
-        align-items: center;    /* <<< Centraliza tudo horizontalmente */
-        text-align: center;     /* <<< Garante que o texto fique centralizado */
-        gap: 0; /* Reseta o gap para controle manual */
-        
-        padding: 30px 25px; /* Ajusta o padding para o novo layout */
-    }
-    
-    .step-icon-wrapper {
-        margin: 0; 
-        /* ADIÇÃO: Adiciona uma margem inferior para separar o ícone do texto */
-        margin-bottom: 1.5rem; /* <<< Espaçamento entre o ícone e o título */
-        width: 80px;  /* Pode ajustar o tamanho para mobile */
-        height: 80px;
-        flex-shrink: 0;
-    }
-    
 }
 
 
@@ -1568,32 +1548,60 @@ main {
         100% { transform: translateY(100%); }
     }
 }
+/* ========================================================================= */
+/* ====== RESPONSIVIDADE FINAL PARA ESTAÇÃO GÊNESE (PROCESSO) ======== */
+/* ========================================================================= */
 
 @media (max-width: 768px) {
-    /* MODO CELULAR */
-    .process-step {
-        display: flex;
-        text-align: left;
-        align-items: flex-start;
+  
+    /* --- Parte 1: Ajusta a Timeline do Processo --- */
+
+    .process-timeline-ai {
+        flex-direction: column;
+        align-items: stretch;
         gap: 20px;
-        /* CORREÇÃO 3: Reseta o padding para a visualização em lista */
-        padding: 25px; 
+    }
+
+    .process-timeline-ai .process-step {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 30px 25px;
+        flex-basis: auto;
+        width: 100%;
     }
     
-    .step-icon-wrapper {
-        /* CORREÇÃO 4: Remove a margem completamente e ajusta o tamanho */
-        margin: 0; 
-        width: 70px;
-        height: 70px;
+    .process-timeline-ai .step-icon-wrapper {
+        margin: 0 0 1.5rem 0;
+        width: 80px;
+        height: 80px;
         flex-shrink: 0;
     }
     
-    .step-number { font-size: 1.8rem; }
-    .step-content { flex: 1; min-width: 0; }
-    .step-content h4 { font-size: 1.2rem; }
-    .step-content p { font-size: 0.95rem; }
-    .process-step:hover { transform: translateX(5px); }
+    .process-timeline-ai .step-number { font-size: 2rem; }
+    .process-timeline-ai .step-content h4 { font-size: 1.4rem; margin-bottom: 0.75rem; }
+    .process-timeline-ai .step-content p { font-size: 1rem; }
     
+    .process-connector {
+        flex-grow: 0; height: 60px; width: 2px;
+        align-self: center; margin: 10px 0;
+    }
+    .process-connector::before {
+        width: 2px; height: 100%;
+        background: linear-gradient(180deg, transparent, var(--c-primary), transparent);
+        transform: translateY(-100%);
+        animation-name: data-flow-vertical;
+    }
+    @keyframes data-flow-vertical {
+        0% { transform: translateY(-100%); } 100% { transform: translateY(100%); }
+    }
+
+    /* --- Parte 2: Ajusta a Grade de Escolha da Bifurcação --- */
+
+    .path-choices-grid {
+        grid-template-columns: 1fr; /* Muda o grid de duas colunas para uma só */
+    }
 }
 /* --- 3.6: SEÇÃO CTA FINAL --- */
 /* ========================================================================= */
