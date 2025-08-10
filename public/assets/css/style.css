@@ -1,0 +1,5003 @@
+/* --- VARS, RESET & BASE SETUP --- */
+:root {
+  --c-bg: #EDE9E3;
+  --c-text: #3a3f47;
+  --c-text-secondary: #6B7280;
+  --c-primary: #7BD96C;
+  --c-secondary: #D4C2A6;
+  --c-surface: #FFFFFF;
+  --c-border: #dcdcdc;
+  --font-primary: 'Inter', sans-serif;
+  --radius: 8px;
+  --transition: 0.3s ease-out;
+}
+
+[data-theme="dark"] {
+  --c-bg: #1a1a1a;
+  --c-text: #EDE9E3;
+  --c-text-secondary: #a0a0a0;
+  --c-surface: #252525;
+  --c-border: #444444;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: var(--c-bg);
+  color: var(--c-text);
+  line-height: 1.7;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+a {
+  color: var(--c-primary);
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* --- SOLUÇÃO DE LAYOUT: CONTEÚDO ABAIXO DO HEADER FIXO --- */
+main {
+    padding-top: 80px; /* Altura do header para empurrar o conteúdo */
+}
+
+/* ========================================================================= */
+/* ====== HEADER GLOBAL CRONOS v1.0 - PARTE 1: DESKTOP & CORE ========== */
+/* ========================================================================= */
+
+/* --- 1. ESTRUTURA PRINCIPAL DO HEADER --- */
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 1.25rem 0; /* Aumenta ligeiramente o padding vertical */
+
+    /* Efeito "Glassmorphism" com transição */
+    background-color: transparent;
+    backdrop-filter: blur(0px); /* Começa sem blur */
+    -webkit-backdrop-filter: blur(0px);
+    border-bottom: 1px solid transparent;
+
+    /* Transição suave para todas as propriedades */
+    transition: background-color 0.4s ease, backdrop-filter 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
+}
+
+/* Estado do Header quando a página é rolada */
+.main-header.scrolled {
+    padding: 1rem 0; /* Header fica ligeiramente menor */
+    background-color: rgba(10, 15, 26, 0.6); /* Cor de vidro escura */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .main-header.scrolled {
+    background-color: rgba(255, 255, 255, 0.6);
+    border-bottom-color: rgba(0, 0, 0, 0.1);
+}
+
+/* O container de navegação interno */
+.main-header nav.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+/* --- 2. LOGO E LINKS DE NAVEGAÇÃO --- */
+.logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.1em; /* Espaçamento sutil para um look premium */
+    color: var(--c-text);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    gap: 2.8rem;
+}
+.nav-links a {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--c-text-secondary);
+    text-decoration: none;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
+}
+.nav-links a:hover {
+    color: var(--c-primary);
+}
+
+
+/* --- 3. MENUS DROPDOWN (DESKTOP) --- */
+.nav-item.dropdown {
+    position: relative;
+}
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 50%; /* Centraliza o início do menu */
+    transform: translateX(-50%) translateY(10px); /* Centraliza e posiciona para animação */
+
+    min-width: 200px;
+    margin-top: 1rem;
+    padding: 0.75rem;
+    border-radius: 12px;
+    list-style: none;
+
+    /* Estilo "Glassmorphism" para o dropdown */
+    background-color: rgba(30, 30, 40, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    
+    /* Animação de entrada */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+[data-theme="light"] .dropdown-menu {
+    background-color: rgba(255, 255, 255, 0.7);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Revela o dropdown no hover */
+.nav-item.dropdown:hover > .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.dropdown-menu li a {
+    display: block;
+    padding: 0.75rem 1rem;
+    white-space: nowrap;
+    border-radius: 8px; /* Cantos arredondados para cada item */
+}
+.dropdown-menu li a:hover {
+    background-color: rgba(255, 255, 255, 0.05); /* Destaque sutil no hover */
+    color: #FFF; /* Cor do texto no hover */
+}
+[data-theme="light"] .dropdown-menu li a:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--c-text);
+}
+
+
+/* --- 4. BOTÃO DE CTA NO NAV --- */
+.nav-cta-button {
+    font-weight: 600;
+    padding: 0.6rem 1.2rem !important; /* !important para sobrescrever o padding geral */
+    border-radius: 8px;
+    background-color: var(--c-primary);
+    color: #0A0F1A !important; /* Texto escuro no botão primário */
+    transition: all 0.3s ease;
+}
+.nav-cta-button:hover {
+    color: #0A0F1A !important;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px -2px var(--c-primary);
+}
+
+/* --- THEME TOGGLE BUTTON --- */
+#theme-toggle {
+    width: 24px; height: 24px; background: none; border: none; cursor: pointer;
+    background-size: contain; background-repeat: no-repeat;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z'%3E%3C/path%3E%3C/svg%3E");
+}
+[data-theme="dark"] #theme-toggle {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23EDE9E3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='5'%3E%3C/circle%3E%3Cline x1='12' y1='1' x2='12' y2='3'%3E%3C/line%3E%3Cline x1='12' y1='21' x2='12' y2='23'%3E%3C/line%3E%3Cline x1='4.22' y1='4.22' x2='5.64' y2='5.64'%3E%3C/line%3E%3Cline x1='18.36' y1='18.36' x2='19.78' y2='19.78'%3E%3C/line%3E%3Cline x1='1' y1='12' x2='3' y2='12'%3E%3C/line%3E%3Cline x1='21' y1='12' x2='23' y2='12'%3E%3C/line%3E%3Cline x1='4.22' y1='19.78' x2='5.64' y2='18.36'%3E%3C/line%3E%3Cline x1='18.36' y1='5.64' x2='19.78' y2='4.22'%3E%3C/line%3E%3C/svg%3E");
+}
+
+/*
+=====================================================
+  CSS DA HOMEPAGE
+  Organizado e Refinado por um Gênio.
+=====================================================
+*/
+
+
+/* --- 1. ESTILOS GENÉRICOS E UTILITÁRIOS --- 
+   Classes usadas em múltiplas seções e páginas.
+-----------------------------------------------------*/
+
+.section-padding { 
+    padding: 6rem 2rem; 
+}
+.section-header { 
+    text-align: center; 
+    max-width: 700px; 
+    margin: 0 auto 4rem; 
+}
+.section-header h2 { 
+    font-size: clamp(2.2rem, 5vw, 3.2rem); 
+    margin-bottom: 1rem; 
+}
+.section-header p { 
+    color: var(--c-text-secondary); 
+    font-size: 1.1rem; 
+}
+.cta-button {
+  display: inline-block; 
+  background-color: var(--c-primary); 
+  color: #000;
+  font-weight: 700; 
+  padding: 1rem 2.5rem; 
+  border-radius: var(--radius);
+  border: 2px solid var(--c-primary); 
+  transition: all var(--transition);
+}
+.cta-button:hover {
+  background-color: transparent; 
+  color: var(--c-primary);
+  transform: translateY(-3px); 
+  box-shadow: 0 4px 15px rgba(123, 217, 108, 0.2);
+}
+.cta-button.secondary { 
+  background-color: var(--c-surface); 
+  color: var(--c-text); 
+  border-color: var(--c-border); 
+}
+.cta-button.secondary:hover { 
+  background-color: var(--c-secondary); 
+  border-color: var(--c-secondary); 
+  color: #000; 
+  box-shadow: 0 4px 15px rgba(212, 194, 166, 0.2); 
+}
+
+/*
+=====================================================
+  CLOUT VE STYLE - ARQUIVO MESTRE
+=====================================================
+  PARTE 3: ESTILOS DE PÁGINAS DE CONTEÚDO (VERSÃO CELESTIAL)
+  CSS forjado por um Gênio para a Homepage e outras páginas.
+=====================================================
+*/
+/*
+=====================================================
+  CLOUT VE STYLE - ARQUIVO MESTRE
+=====================================================
+  PARTE 3: ESTILOS DE PÁGINAS DE CONTEÚDO
+  (A SINFONIA FINAL)
+=====================================================
+*//*
+=====================================================
+  PARTE 3: PÁGINA PRINCIPAL (HOMEPAGE)
+=====================================================
+*//*
+=====================================================
+  CLOUT VE STYLE - ARQUIVO MESTRE
+=====================================================
+  PARTE 3: ESTILOS DE PÁGINAS DE CONTEÚDO (VERSÃO CELESTIAL)
+  Estilos que definem a identidade visual de cada página.
+=====================================================
+*//*
+=====================================================
+  CLOUT VE STYLE - ARQUIVO MESTRE
+=====================================================
+  PARTE 3: HOMEPAGE (VERSÃO "CLAREZA E PODER")
+=====================================================
+*/
+
+
+
+
+/* ========================================================================= */
+/* ============== CSS FINAL: SEÇÃO HERO ULTRA PRO MAX ================== */
+/* ========================================================================= */
+
+/* --- Configuração Principal da Hero Section --- */
+#hero {
+    position: relative;
+    height: 100vh;
+    min-height: 800px; /* Garante altura suficiente */
+    color: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden; /* CRUCIAL para evitar que animações vazem */
+}
+
+
+/* --- CAMADA 0: O Vídeo de Fundo --- */
+.hero-bg-video-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.hero-bg-video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.6); /* Escurece o vídeo um pouco mais */
+}
+
+
+/* --- CAMADA 1: Partículas de Dados em Movimento --- */
+@keyframes particle-flow {
+    from { transform: translateY(0); }
+    to { transform: translateY(-1000px); }
+}
+
+.particle-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+.particle-overlay::before, .particle-overlay::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: radial-gradient(circle at center, rgba(10, 132, 255, 0.5) 1px, transparent 1px);
+    background-size: 20px 20px;
+    background-repeat: repeat;
+    animation: particle-flow 40s linear infinite;
+}
+.particle-overlay::after {
+    background-size: 40px 40px; /* Segunda camada com tamanho diferente */
+    animation-duration: 25s; /* E velocidade diferente para efeito parallax */
+}
+
+
+/* --- CAMADA 2: O Overlay de Foco e Cor --- */
+.hero-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, #0A0F1A 100%);
+    opacity: 0.95;
+}
+
+
+/* --- CAMADA 3: O Conteúdo Principal --- */
+.hero-content {
+    position: relative;
+    z-index: 4;
+    animation: fade-in-up 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.hero-title-main {
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 15px rgba(255,255,255,0.1), 0 0 30px rgba(10, 132, 255, 0.4);
+    margin-bottom: 1.5rem;
+}
+
+/* O texto em destaque no título */
+.highlight-text {
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color);
+}
+
+.hero-subtitle-main {
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    max-width: 750px;
+    margin: 0 auto 3rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+}
+
+.hero-cta-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+
+/* --- BOTÕES "CONTROL PANEL" --- */
+/* Estilo Base para ambos os botões */
+.cta-button {
+    padding: 14px 28px;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+
+/* Botão Primário - Principal */
+.primary-cta {
+    background: linear-gradient(45deg, var(--primary-color), #00A3FF);
+    color: white;
+    box-shadow: 0 4px 20px -5px rgba(10, 132, 255, 0.7);
+}
+.primary-cta:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 8px 30px -5px rgba(10, 132, 255, 1);
+}
+
+/* Botão Secundário - Holográfico */
+.secondary-cta {
+    color: white;
+    background-color: rgba(255,255,255,0.05);
+    border-color: rgba(255,255,255,0.2);
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+}
+/* Efeito de brilho/glare no hover */
+.secondary-cta::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transform: skewX(-30deg);
+    transition: left 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+.secondary-cta:hover::before {
+    left: 150%;
+}
+.secondary-cta:hover {
+    border-color: rgba(255,255,255,0.5);
+    background-color: rgba(255,255,255,0.1);
+}
+
+
+/* --- CAMADA 4: Indicador de Rolagem Animado --- */
+.scroll-down-indicator {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+}
+.mouse {
+    width: 28px; height: 48px;
+    border: 2px solid rgba(255,255,255,0.7);
+    border-radius: 14px;
+    position: relative;
+}
+.mouse span {
+    position: absolute;
+    display: block;
+    width: 6px; height: 6px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 50%;
+    top: 8px; left: 50%;
+    transform: translateX(-50%);
+    animation: scroll-anim 2s infinite ease-out;
+}
+
+@keyframes scroll-anim {
+    0% { top: 8px; opacity: 1; }
+    100% { top: 25px; opacity: 0; }
+}
+/* ========================================================================= */
+/* ============= CSS FINAL: SEÇÃO DE SERVIÇOS PRO MAX ================== */
+/* ========================================================================= */
+
+/* --- Configuração da Seção Principal --- */
+#services {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fundo de Grid para a seção inteira */
+.service-background-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    background-image: 
+        linear-gradient(rgba(10, 132, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 132, 255, 0.2) 1px, transparent 1px);
+    background-size: 60px 60px;
+}
+
+/* Títulos da seção com cor e sombra apropriadas */
+#services .section-title,
+#services .page-subtitle,
+#services .section-title-small {
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --- Vitrine Principal: Clout Builder --- */
+.clout-builder-showcase {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+}
+
+
+/* --- Conteúdo à Esquerda da Vitrine --- */
+.showcase-content {
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+}
+
+.showcase-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.showcase-header h3 {
+    font-size: 2.2rem;
+    color: var(--secondary-color);
+}
+
+.product-tag {
+    background: linear-gradient(90deg, var(--primary-color), #00A3FF);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    text-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+
+.showcase-description {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 30px;
+}
+
+/* Lista de features */
+.feature-list {
+    list-style: none;
+    margin-bottom: 30px;
+    flex-grow: 1; /* Empurra o overview de preço para baixo */
+}
+
+.feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 15px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.feature-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    margin-top: 4px;
+    background-color: rgba(10, 132, 255, 0.2);
+    border-radius: 50%;
+    position: relative;
+}
+
+/* O checkmark / ícone de energia dentro do círculo */
+.feature-icon::before {
+    content: '✓';
+    font-weight: bold;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--primary-color);
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+/* --- Painel de Ação (CTA) à Direita --- */
+.showcase-cta-panel {
+    background: rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 40px;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    position: relative; /* Para o hover de preço */
+}
+
+.showcase-cta-panel h4 {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+    margin-bottom: 25px;
+}
+
+/* O botão principal para lançar o app */
+.btn-launch-app {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(90deg, #007BFF, var(--primary-color));
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(10, 132, 255, 0.4), 
+                inset 0 1px 1px rgba(255,255,255,0.2);
+    transition: all 0.3s ease;
+}
+.btn-launch-app:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 10px 30px rgba(10, 132, 255, 0.6);
+}
+
+/* Seta animada dentro do botão */
+.btn-launch-app::after {
+    content: '→';
+    font-size: 1.5rem;
+    transition: transform 0.3s ease;
+}
+.btn-launch-app:hover::after {
+    transform: translateX(5px);
+}
+
+/* Detalhes de preço que aparecem no hover */
+.pricing-details-hover {
+    position: absolute;
+    bottom: -15px;
+    width: calc(100% - 40px);
+    padding: 15px;
+    background: #0A0F1A;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(20px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.showcase-cta-panel:hover .pricing-details-hover {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pricing-details-hover p {
+    margin: 5px 0;
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+}
+
+/* --- Seção Secundária: Serviços Premium --- */
+
+/* ========================================================================= */
+/* ==== CSS: TRANSIÇÃO PARA SERVIÇOS PREMIUM (JUNCTION) - PRO MAX ====== */
+/* ========================================================================= */
+
+.premium-services-junction {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 800px;
+    margin: 100px auto 60px auto;
+    padding: 0 2rem;
+}
+
+.junction-content {
+    padding: 1.5rem;
+    border-style: solid;
+    border-color: rgba(10, 132, 255, 0.2);
+    border-width: 1px 1px 0 1px; /* Sem borda inferior */
+    border-radius: 12px 12px 0 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+}
+
+.junction-title {
+    font-family: monospace;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--c-primary);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.1em;
+}
+
+.junction-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* O Divisor de Energia Animado que conecta à próxima seção */
+.junction-divider {
+    height: 3px;
+    width: 20%;
+    margin: 0 auto;
+    position: relative;
+    background-color: rgba(10, 132, 255, 0.1);
+}
+
+/* O pulso de energia */
+.junction-divider::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 25%;
+    top: 0;
+    left: 50%;
+    background-color: var(--c-primary);
+    box-shadow: 0 0 10px 1px var(--c-primary);
+    animation: pulse-line 3s infinite ease-in-out;
+}
+
+@keyframes pulse-line {
+    0%, 100% {
+        transform: scaleX(1) translateX(-50%);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scaleX(2.5) translateX(-20%);
+        opacity: 1;
+    }
+}
+/* ========================================================================= */
+/* === CSS: CONSOLE DE PROTOCOLOS DE DOMÍNIO (SERVIÇOS) - PRO MAX ======== */
+/* ========================================================================= */
+
+.protocols-grid {
+    display: grid;
+    /* 3 colunas em telas grandes, 1 em telas pequenas */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.protocol-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 35px 30px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.02), transparent);
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease-out;
+}
+.protocol-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(10, 132, 255, 0.5);
+}
+
+/* Header do Card */
+.protocol-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.protocol-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 132, 255, 0.05);
+    border: 1px solid rgba(10, 132, 255, 0.15);
+}
+.protocol-icon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--c-primary);
+    mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+    -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+}
+/* Ícones específicos para cada protocolo */
+.icon-genesis { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-2-9a2 2 0 114 0 2 2 0 01-4 0z'/%3E%3Ccircle cx='12' cy='12' r='2'/%3E%3C/svg%3E"); }
+.icon-architect { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M22 10.5V9l-10-7L2 9v1.5l10-7 10 7zM12 4.5l8 5.5-8 5.5-8-5.5 8-5.5zM2 13v1.5l10 7 10-7V13l-10 7-10-7z'/%3E%3C/svg%3E"); }
+.icon-dominion { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2c5.52 0 10 4.48 10 10s-4.48 10-10 10S2 17.52 2 12 6.48 2 12 2zm-1 14h2v2h-2v-2zm0-8h2v6h-2V8z'/%3E%3C/svg%3E");}
+.protocol-header h3 {
+    font-size: 1.6rem; color: #FFF;
+}
+
+/* Corpo do Card e Lista de Features */
+.protocol-body { flex-grow: 1; }
+.protocol-body p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+.protocol-features { list-style: none; margin: 0; padding: 0; }
+.protocol-features li {
+    padding-left: 2rem;
+    position: relative;
+    margin-bottom: 0.8rem;
+    color: rgba(255,255,255,0.85);
+}
+.protocol-features li::before { /* O tick azul */
+    content: '✓';
+    position: absolute; left: 0;
+    color: var(--c-primary);
+    font-weight: bold;
+}
+
+/* Footer e Botão */
+.protocol-footer { margin-top: 1.5rem; }
+.protocol-cta {
+    display: block; width: 100%; text-align: center;
+    padding: 0.9rem;
+    border-radius: 12px;
+    text-decoration: none; font-weight: 600;
+    background: rgba(10, 132, 255, 0.1);
+    color: var(--c-primary);
+    border: 1px solid rgba(10, 132, 255, 0.3);
+    transition: all 0.3s ease;
+}
+.protocol-cta:hover {
+    background: var(--c-primary); color: #0A0F1A;
+}
+.protocol-cta.primary-cta {
+    background: var(--c-primary); color: #0A0F1A;
+}
+.protocol-cta.primary-cta:hover {
+    box-shadow: 0 0 15px 0px var(--c-primary);
+}
+
+/* Card em Destaque (Featured) */
+.featured-protocol {
+    border-color: rgba(10, 132, 255, 0.4);
+    transform: scale(1.05); /* Ligeiramente maior */
+}
+.featured-protocol:hover { transform: scale(1.07) translateY(-8px); }
+.featured-tag {
+    position: absolute; top: -12px; left: 20px;
+    background: linear-gradient(90deg, #00A3FF, var(--c-primary));
+    color: white; font-size: 0.75rem; font-weight: 700;
+    padding: 5px 12px; border-radius: 20px;
+}
+/* --- RESPONSIVIDADE PARA A NOVA ARQUITETURA DE SERVIÇOS --- */
+@media (max-width: 1024px) {
+    .clout-builder-showcase {
+        grid-template-columns: 1fr; /* Vitrine em coluna única */
+    }
+
+    .showcase-cta-panel {
+        border-left: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+    }
+}
+
+@media (max-width: 768px) {
+    .enterprise-services-grid {
+        grid-template-columns: 1fr; /* Serviços enterprise em coluna única */
+    }
+
+    .showcase-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .showcase-content, .showcase-cta-panel {
+        padding: 30px 25px;
+    }
+    
+    /* Em mobile, o hover é ruim para UX. Mostramos os preços por padrão. */
+    .pricing-details-hover {
+        position: relative;
+        opacity: 1;
+        transform: translateY(0);
+        margin-top: 25px;
+        background: transparent;
+        border: none;
+        padding: 0;
+        bottom: auto;
+        width: 100%;
+    }
+    .pricing-overview {
+        display: none; /* Escondemos o resumo inicial em mobile */
+    }
+}
+/* --- ESTILOS ADICIONAIS: SEÇÃO DE RESULTADOS ULTRA-MODERNA --- */
+
+#results {
+    background-color: #0D1117; /* Um preto-azulado, cor de fundo do GitHub */
+    position: relative;
+    overflow: hidden; /* Importante para o efeito aurora */
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+#results .section-title, 
+#results .page-subtitle,
+#results .section-title-small {
+    color: var(--text-light);
+}
+
+/* Fundo AURORA animado */
+@keyframes aurora-animation {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.aurora-background {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 140vw;
+    height: 140vw;
+    z-index: 1;
+    background: conic-gradient(
+        from 90deg at 50% 50%, 
+        rgba(10, 132, 255, 0.2), 
+        transparent 30%, 
+        rgba(48, 209, 88, 0.2),  /* Verde, para contraste */
+        transparent 70%,
+        rgba(10, 132, 255, 0.2)
+    );
+    animation: aurora-animation 25s linear infinite;
+}
+
+/* Grade principal dos números */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+/* Card de estatística com efeito GLASSMORPHISM e borda animada */
+.stat-card {
+    position: relative;
+    text-align: center;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.05); /* Base do glassmorphism */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    overflow: hidden; /* Para a borda animada */
+    transition: transform 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+}
+
+/* Borda animada "aurora" */
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200%;
+    height: 200%;
+    z-index: 0;
+    background: conic-gradient(
+        from 0deg,
+        transparent,
+        var(--primary-color),
+        transparent 30%
+    );
+    animation: aurora-animation 4s linear infinite;
+}
+
+.stat-card > * {
+    position: relative; /* Coloca o conteúdo acima da borda animada */
+    z-index: 1;
+}
+
+.stat-card h3 {
+    font-size: clamp(3.5rem, 8vw, 5.5rem);
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-shadow: 0 0 20px rgba(10, 132, 255, 0.5); /* Efeito de brilho */
+}
+.stat-card p {
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--text-light);
+}
+
+
+.results-breakdown {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    position: relative;
+    z-index: 2; /* Garante que os cards fiquem sobre o fundo aurora */
+}
+
+.breakdown-card {
+    background: rgba(13, 17, 23, 0.7); /* Cor de fundo mais escura para contraste */
+    padding: 30px 25px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(8px); /* Adiciona o efeito de vidro aqui também */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.breakdown-card:hover {
+    background: rgba(37, 43, 51, 0.7);
+    border-color: rgba(10, 132, 255, 0.5);
+}
+
+.breakdown-icon {
+    font-family: monospace;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--c-primary);
+    background: rgba(10, 132, 255, 0.1);
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(10, 132, 255, 0.2);
+    margin-bottom: 1.2rem;
+    align-self: flex-start;
+}
+
+.breakdown-card h4 {
+    font-size: 1.3rem;
+    color: #FFF;
+    margin-bottom: 1rem;
+}
+
+.breakdown-card p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.7;
+    flex-grow: 1; /* Empurra o link para baixo */
+}
+
+/* A tag que conecta a prova ao número */
+.stat-link {
+    margin-top: 1.5rem;
+    align-self: flex-start;
+    background-color: transparent;
+    color: var(--secondary-color, #AAA);
+    font-size: 0.9rem;
+    font-style: italic;
+    font-weight: 500;
+    padding: 0;
+    border-radius: 0;
+    opacity: 0.6;
+}
+
+/* Opcional: Destaques para o título da seção */
+.highlight-main {
+    color: var(--c-primary);
+    text-shadow: 0 0 15px var(--c-primary);
+}
+.highlight-alt {
+    color: #2ECC71; /* Um verde tecnológico complementar */
+    text-shadow: 0 0 15px rgba(46, 204, 113, 0.7);
+}
+
+/* A tag que conecta a prova ao número */
+.stat-link {
+    margin-top: 20px;
+    align-self: flex-start;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--secondary-color);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+}
+
+/* ========================================================================= */
+/* ====== CSS FINAL: CABEÇALHO DE SEÇÃO ULTRA HIGH-TECH PRO MAX ========== */
+/* ========================================================================= */
+
+/* --- O Container do Cabeçalho de Seção ("Painel de Comando") --- */
+.section-header {
+    text-align: center;
+    margin-bottom: 80px;
+    position: relative; /* Essencial para os colchetes holográficos */
+    padding: 0 40px; /* Garante que os colchetes não colem no texto */
+}
+
+
+/* --- Os Colchetes Holográficos que Envolvem o Cabeçalho --- */
+.section-header::before,
+.section-header::after {
+    content: '';
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-color: var(--primary-color);
+    border-style: solid;
+    opacity: 0.7;
+    
+    /* Animação de pulso para o brilho */
+    animation: header-bracket-glow 3s infinite ease-in-out;
+}
+ /*---------------------------------SEÇÃO HEADER RESULTS----------------------------------------*/
+/* Destaque Principal (Resultados), usando a cor primária da marca */
+.highlight-main {
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--primary-color), 0 0 40px var(--primary-color);
+    /* Mantém o estilo de destaque mais forte que já definimos */
+}
+
+/* Destaque Alternativo (Beleza), com uma cor secundária sofisticada */
+.highlight-alt {
+    color: #2ECC71; /* Um verde vibrante e tecnológico */
+    text-shadow: 0 0 15px rgba(46, 204, 113, 0.7), 0 0 30px rgba(46, 204, 113, 0.5);
+}
+
+
+/* --- O Punchline / Subtítulo --- */
+.header-punchline {
+    font-size: 1.2rem;
+    font-weight: 500; /* Ligeiramente mais pesado que um subtítulo comum */
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 650px;
+    margin: 0 auto;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.1); /* Um brilho sutil para dar "pop" */
+}
+
+/* ========================================================================= */
+/* ==== CSS ADICIONAL: DESTAQUE PARA "EPICENTRO" ======================== */
+/* ========================================================================= */
+
+/* --- Destaque Especial para a palavra "Epicentro" --- */
+.epicenter-highlight {
+    /* Cor base que se destaca */
+    color: #FFFFFF; 
+    
+    /* Efeito de brilho de energia que pulsa sutilmente */
+    animation: epicenter-pulse 3s infinite ease-in-out;
+}
+
+
+/* --- A Animação de Pulso do Epicentro --- */
+@keyframes epicenter-pulse {
+    0%, 100% {
+        /* Estado de repouso */
+        text-shadow: 
+            0 0 10px var(--primary-color),
+            0 0 20px var(--primary-color),
+            0 0 40px rgba(10, 132, 255, 0.8),
+            0 0 80px rgba(10, 132, 255, 0.6);
+    }
+    50% {
+        /* Estado de energia máxima */
+        text-shadow: 
+            0 0 15px #FFF,
+            0 0 30px var(--primary-color),
+            0 0 50px rgba(10, 132, 255, 0.9),
+            0 0 100px rgba(10, 132, 255, 0.7);
+    }
+}
+
+
+/* Colchete Superior Esquerdo */
+.section-header::before {
+    top: 0;
+    left: 0;
+    border-width: 2px 0 0 2px;
+}
+
+/* Colchete Inferior Direito */
+.section-header::after {
+    bottom: 0;
+    right: 0;
+    border-width: 0 2px 2px 0;
+}
+
+@keyframes header-bracket-glow {
+    0%, 100% {
+        box-shadow: 0 0 10px -2px var(--primary-color);
+        opacity: 0.7;
+    }
+    50% {
+        box-shadow: 0 0 15px 0px var(--primary-color);
+        opacity: 1;
+    }
+}
+
+
+/* --- Título Principal com Brilho Aprimorado --- */
+.section-header .section-title {
+    /* Herda a cor base, mas aprimoramos a sombra */
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.15), 
+                 0 0 30px rgba(10, 132, 255, 0.5);
+    letter-spacing: -0.01em; /* Detalhe tipográfico refinado */
+}
+
+
+/* --- O Divisor de Energia Animado --- */
+.header-divider {
+    width: 100px;
+    height: 2px;
+    margin: 1.5rem auto; /* Espaçamento entre título e subtítulo */
+    background: linear-gradient(
+        90deg, 
+        transparent, 
+        rgba(10, 132, 255, 0.8),
+        transparent
+    );
+    box-shadow: 0 0 15px 1px rgba(10, 132, 255, 0.7);
+    animation: flicker-divider 4s infinite linear;
+}
+
+@keyframes flicker-divider {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; }
+    75% { opacity: 0.7; }
+}
+
+
+/* --- Subtítulo com melhor legibilidade --- */
+.section-header .page-subtitle {
+    color: rgba(255, 255, 255, 0.85); /* Cor ligeiramente mais brilhante */
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+
+/* --- Responsividade para os detalhes finos --- */
+@media (max-width: 768px) {
+    .section-header {
+        padding: 0 10px; /* Reduz o padding para não comprimir o texto */
+    }
+    .section-header::before,
+    .section-header::after {
+        width: 20px; /* Reduz o tamanho dos colchetes */
+        height: 20px;
+    }
+}
+
+
+
+
+/* ========================================================================= */
+/* ==== CSS FINAL REVISADO: SEÇÃO DE PROCESSO ULTRA HIGH-TECH ROBUSTO ==== */
+/* ========================================================================= */
+
+
+.bifurcation-point {
+    display: flex;
+    align-items: center;
+    margin: 4rem 0;
+    position: relative;
+    z-index: 2;
+}
+
+.bifurcation-line-left,
+.bifurcation-line-right {
+    flex-grow: 1;
+    height: 1px;
+    background: rgba(10, 132, 255, 0.2);
+}
+
+.bifurcation-junction-box {
+    flex-shrink: 0;
+    padding: 0.5rem 1.5rem;
+    margin: 0 1.5rem;
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--c-primary);
+    border: 1px solid rgba(10, 132, 255, 0.3);
+    border-radius: 6px;
+    background: rgba(10, 15, 26, 0.8);
+}
+
+.path-choices-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+.path-card {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.path-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(10, 132, 255, 0.5);
+}
+
+.path-header {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+.path-icon-wrapper {
+    width: 60px; height: 60px;
+    margin: 0 auto 1rem auto;
+    border-radius: 50%;
+    background: rgba(10, 132, 255, 0.1);
+    display: flex; justify-content: center; align-items: center;
+}
+.path-icon {
+    width: 28px; height: 28px;
+    background: var(--c-primary);
+    mask-size: contain; -webkit-mask-size: contain;
+    mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;
+    mask-position: center; -webkit-mask-position: center;
+}
+.icon-self { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");}
+.icon-premium { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.04 16L6.5 12.55l1.41-1.41L10.96 14l5.13-5.13 1.41 1.41L10.96 17z'/%3E%3C/svg%3E");}
+.path-header h4 { font-size: 1.6rem; color: #FFF; }
+
+.path-body { flex-grow: 1; }
+.path-body p {
+    text-align: center;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+}
+
+.path-footer { margin-top: 1.5rem; }
+.path-cta {
+    display: block; width: 100%; text-align: center;
+    padding: 0.9rem; border-radius: 12px;
+    text-decoration: none; font-weight: 700; font-size: 1rem;
+    color: var(--c-primary); background: transparent;
+    border: 1px solid var(--c-primary);
+    transition: all 0.3s ease;
+}
+.path-cta:hover { background: var(--c-primary); color: #0A0F1A; }
+.path-cta.premium-cta {
+    background: var(--c-primary); color: #0A0F1A;
+}
+
+/* Responsividade da Bifurcação */
+@media (max-width: 768px) {
+    .path-choices-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* --- Configuração Principal da Seção --- */
+#process {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+#process::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+    background-image: 
+        linear-gradient(rgba(10, 132, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 132, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    mask-image: radial-gradient(ellipse 80% 50% at 50% 0%, black 40%, transparent 100%);
+}
+
+#process .section-title,
+#process .page-subtitle {
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+}
+
+/* --- A Pipeline da IA --- */
+.process-timeline-ai {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- O Nó de Processamento / Card --- */
+.process-step {
+    flex-basis: 30%;
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    overflow: hidden; /* Mantido, pois é essencial para a borda */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1), background 0.4s ease;
+
+    /* A CORREÇÃO PRINCIPAL: Adicionamos padding-top suficiente para conter o ícone */
+    padding: 65px 25px 30px 25px; 
+}
+
+.process-step:hover {
+    transform: translateY(-12px) scale(1.03);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.process-step::before {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    inset: -2px;
+    background: conic-gradient(from 90deg, rgba(10, 132, 255, 0.8), #8E44AD, rgba(48, 209, 88, 0.8), #8E44AD, rgba(10, 132, 255, 0.8));
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    animation: rotate-border 6s linear infinite;
+}
+
+.process-step:hover::before { opacity: 1; }
+
+@keyframes rotate-border {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --- O Núcleo Pulsante --- */
+.step-icon-wrapper {
+    width: 110px;
+    height: 110px;
+    /* CORREÇÃO 2: A margem é ajustada para funcionar com o novo padding */
+    margin: -120px auto 30px auto; 
+    position: relative;
+    background: #0A0F1A;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-icon-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+    z-index: -1;
+    opacity: 0.3;
+    animation: pulse-glow 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { transform: scale(0.9); opacity: 0.3; }
+    50% { transform: scale(1.1); opacity: 0.6; }
+}
+
+/* --- Número e Conteúdo --- */
+.step-number {
+    font-family: var(--font-heading);
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--primary-color), 0 0 25px rgba(10, 132, 255, 0.7);
+}
+.step-content { position: relative; z-index: 2; }
+.step-content h4 { font-size: 1.4rem; margin-bottom: 12px; color: var(--secondary-color); }
+.step-content p { font-size: 1rem; line-height: 1.7; color: rgba(255, 255, 255, 0.75); word-wrap: break-word; }
+
+/* --- Conector Animado --- */
+.process-connector {
+    flex-grow: 1;
+    height: 2px;
+    background-color: rgba(10, 132, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.process-connector::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    box-shadow: 0 0 10px 1px var(--primary-color);
+    transform: translateX(-100%);
+    animation: data-flow 2.5s infinite ease-in-out;
+}
+
+@keyframes data-flow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* --- REVISÃO DE RESPONSIVIDADE (CRÍTICO) --- */
+@media (max-width: 992px) {
+    .process-timeline-ai {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 20px;
+    }
+    
+    .process-step { flex-basis: auto; }
+    
+    /* Conector vertical para mobile/tablet */
+    .process-connector {
+        flex-grow: 0; height: 60px; width: 2px;
+        align-self: center; margin: 10px 0;
+    }
+
+    .process-connector::before {
+        width: 2px; height: 100%;
+        background: linear-gradient(180deg, transparent, var(--primary-color), transparent);
+        transform: translateY(-100%);
+        animation-name: data-flow-vertical;
+    }
+
+    @keyframes data-flow-vertical {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(100%); }
+    }
+}
+
+@media (max-width: 768px) {
+    /* MODO CELULAR */
+    .process-step {
+        display: flex;
+        text-align: left;
+        align-items: flex-start;
+        gap: 20px;
+        /* CORREÇÃO 3: Reseta o padding para a visualização em lista */
+        padding: 25px; 
+    }
+    
+    .step-icon-wrapper {
+        /* CORREÇÃO 4: Remove a margem completamente e ajusta o tamanho */
+        margin: 0; 
+        width: 70px;
+        height: 70px;
+        flex-shrink: 0;
+    }
+    
+    .step-number { font-size: 1.8rem; }
+    .step-content { flex: 1; min-width: 0; }
+    .step-content h4 { font-size: 1.2rem; }
+    .step-content p { font-size: 0.95rem; }
+    .process-step:hover { transform: translateX(5px); }
+    
+}
+/* --- 3.6: SEÇÃO CTA FINAL --- */
+/* ========================================================================= */
+/* =========== CSS FINAL: SEÇÃO CTA ULTRA HIGH-TECH PRO MAX ============ */
+/* ========================================================================= */
+
+/* --- Configuração Principal da Seção --- */
+#final-cta {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    padding: 120px 0; /* Maior espaçamento para mais impacto */
+}
+
+
+/* --- O Foco de Luz/Energia do Fundo --- */
+.cta-background-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    padding-bottom: 150%; /* Truque para manter proporção */
+    z-index: 1;
+    background: radial-gradient(ellipse at 50% 50%, rgba(10, 132, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none; /* Garante que não bloqueie interações */
+}
+
+
+/* --- O Painel de Conteúdo --- */
+.final-cta-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 40px;
+    
+    /* O painel principal em si, como uma placa holográfica */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+
+/* --- A Tipografia de Impacto --- */
+.cta-headline {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    line-height: 1.4;
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    margin-bottom: 1rem;
+}
+
+.cta-subheadline {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 600px;
+    margin: 0 auto 2.5rem;
+}
+
+
+/* --- O Botão de "Ignição" Final --- */
+.final-cta-button {
+    display: inline-block;
+    padding: 18px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(45deg, #007BFF, var(--primary-color));
+    border: none;
+    border-radius: 14px;
+    
+    /* Sombra de brilho constante, que será animada */
+    box-shadow: 0 0 20px rgba(10, 132, 255, 0.5),
+                0 0 35px rgba(10, 132, 255, 0.4),
+                inset 0 1px 1px rgba(255,255,255,0.3);
+
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    /* A animação de pulso contínuo */
+    animation: pulse-cta-button 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse-cta-button {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(10, 132, 255, 0.5),
+                    0 0 35px rgba(10, 132, 255, 0.4),
+                    inset 0 1px 1px rgba(255,255,255,0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(10, 132, 255, 0.7),
+                    0 0 50px rgba(10, 132, 255, 0.6),
+                    inset 0 1px 1px rgba(255,255,255,0.3);
+    }
+}
+
+/* O efeito no hover amplifica a animação */
+.final-cta-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    animation-play-state: paused; /* Pausa a animação para dar controle ao usuário */
+    box-shadow: 0 0 35px rgba(10, 132, 255, 0.8),
+                0 0 60px rgba(10, 132, 255, 0.7),
+                inset 0 1px 1px rgba(255,255,255,0.3);
+}
+
+
+/* Efeito "glare" que passa pelo botão no hover */
+.final-cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 75%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.final-cta-button:hover::before {
+    left: 150%;
+}
+
+
+/* --- RESPONSIVIDADE PARA O CTA FINAL --- */
+@media (max-width: 768px) {
+    #final-cta {
+        padding: 80px 0;
+    }
+    .final-cta-content {
+        padding: 30px 20px;
+    }
+    .cta-headline {
+        font-size: 1.6rem;
+    }
+    .final-cta-button {
+        padding: 16px 32px;
+        font-size: 1.1rem;
+    }
+}
+
+/* a. Hero Pessoal */
+.personal-brand-hero { position: relative; text-align: center; overflow: hidden; padding: 10rem 2rem; background: radial-gradient(ellipse at 50% 100%, var(--c-surface), var(--c-bg)); }
+[data-theme="dark"] .personal-brand-hero { background: radial-gradient(ellipse at 50% 100%, #2a2a2a, var(--c-bg)); }
+#hero-particle-system { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+.personal-hero-background-vignette { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 2; background: radial-gradient(ellipse at center,rgba(0,0,0,0) 50%,rgba(0,0,0,0.5) 100%); opacity: 0.3; }
+.personal-hero-content { position: relative; z-index: 3; }
+.personal-brand-hero h1 { font-size: clamp(3rem, 8vw, 6.5rem); line-height: 1.1; margin: 1rem 0; text-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+.personal-brand-hero p { font-size: 1.3rem; color: var(--c-text-secondary); margin-bottom: 2rem; }
+
+/* b. Seção de Transformação */
+.transformation-section { padding-top: 8rem; padding-bottom: 8rem; }
+.transformation-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 2rem; margin-top: 4rem; }
+.transformation-card { border: 1px solid var(--c-border); border-radius: var(--radius); padding: 1.5rem; height: 100%; }
+.transformation-card .card-header { text-align: center; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--c-border); }
+.transformation-card h4 { font-size: 1.2rem; }
+.transformation-card.before { background-color: var(--c-surface); }
+.chaotic-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; filter: blur(1px); opacity: 0.7; }
+.chaotic-links span { padding: 0.5rem 1rem; background: var(--c-bg); border: 1px dashed var(--c-border); border-radius: 99px; font-size: 0.9rem; }
+.transformation-arrow { font-size: 3rem; color: var(--c-primary); }
+.transformation-arrow::after { content: '→'; display: block; }
+.central-hub { display: flex; justify-content: center; align-items: center; min-height: 140px; }
+.hub-core { font-size: 1.5rem; font-weight: 700; padding: 1.5rem 3rem; border-radius: var(--radius); background: linear-gradient(45deg, var(--c-primary), #4caf50); color: var(--c-bg); text-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+[data-theme="light"] .hub-core { color: #FFFFFF; }
+.transformation-card .card-footer { display: flex; justify-content: space-around; padding-top: 1.5rem; margin-top: 1.5rem; border-top: 1px solid var(--c-border); font-size: 0.9rem; font-weight: 500; color: var(--c-text-secondary); }
+
+/* c. Arquitetura da Autoridade */
+.authority-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; margin-top: 3rem; }
+.authority-card { background: linear-gradient(135deg, var(--c-surface), var(--c-bg)); padding: 2.5rem; border: 1px solid var(--c-border); border-radius: var(--radius); }
+.authority-card h3 { font-size: 1.6rem; margin-bottom: 1rem; }
+.authority-card p { font-size: 1.1rem; line-height: 1.8; color: var(--c-text-secondary); }
+
+/* d. Estudo de Caso V2 */
+.case-study-v2 { background: var(--c-bg); padding: 8rem 2rem; }
+.case-study-v2-container { text-align: center; }
+.case-study-v2-content { max-width: 700px; margin: 0 auto 3rem auto; }
+.case-study-v2-content h3 { font-size: clamp(2rem, 5vw, 3rem); margin: 1rem 0; }
+.case-study-v2-content p { font-size: 1.2rem; color: var(--c-text-secondary); }
+.interactive-mockup .mockup-link { display: block; position: relative; border-radius: var(--radius); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); overflow: hidden; transition: transform 0.4s ease, box-shadow 0.4s ease; }
+.interactive-mockup .mockup-link:hover { transform: translateY(-10px); box-shadow: 0 35px 60px -15px rgba(0,0,0,0.3); }
+.interactive-mockup .mockup-content { background: #FFFFFF; }
+.interactive-mockup img { display: block; width: 100%; height: auto; }
+.mockup-cta { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 1.5rem 3rem; background: rgba(0,0,0,0.7); color: #FFF; font-size: 1.5rem; font-weight: 600; border-radius: var(--radius); opacity: 0; transition: opacity 0.4s ease; }
+.mockup-link:hover .mockup-cta { opacity: 1; }
+.mockup-cta span { transition: transform 0.3s ease; display: inline-block; }
+.mockup-link:hover .mockup-cta span { transform: translateX(5px); }
+
+/* e. Seção "Você Se Torna" */
+.you-become-section { background: var(--c-surface); }
+.icon-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 3rem; margin-top: 4rem; }
+.icon-item { text-align: center; }
+.icon-shape-v2 { display: inline-flex; justify-content: center; align-items: center; width: 60px; height: 60px; margin-bottom: 1.5rem; border-radius: 50%; background-color: var(--c-primary); -webkit-mask-size: 50%; mask-size: 50%; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; transition: transform 0.4s ease, box-shadow 0.4s ease; }
+.icon-item:hover .icon-shape-v2 { transform: scale(1.1) rotate(5deg); box-shadow: 0 10px 20px rgba(123, 217, 108, 0.4); }
+.icon-item h4 { font-size: 1.4rem; margin-bottom: 0.5rem; }
+.icon-item span { color: var(--c-text-secondary); }
+[data-icon="magnet"] { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12V8a8 8 0 0 1 16 0v4'%3E%3C/path%3E%3Cpath d='M4 8V4h5.5a3.5 3.5 0 0 1 0 7H4'%3E%3C/path%3E%3Cpath d='M20 8v4h-5.5a3.5 3.5 0 0 0 0-7H20'%3E%3C/path%3E%3C/svg%3E"); }
+[data-icon="fortress"] { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 22h16'%3E%3C/path%3E%3Cpath d='M4 18h16'%3E%3C/path%3E%3Cpath d='M6 18V8l6-4 6 4v10'%3E%3C/path%3E%3Cpath d='M12 18V2h2v4h-2V2z'%3E%3C/path%3E%3C/svg%3E");}
+[data-icon="megaphone"] { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 3H4v4'%3E%3C/path%3E%3Cpath d='M4 3l7.27 7.27a2 2 0 0 0 2.83 0L21 4'%3E%3C/path%3E%3Cpath d='M14 17l-3-3'%3E%3C/path%3E%3Cpath d='M21 21l-3.35-3.35'%3E%3C/path%3E%3C/svg%3E");}
+
+
+/* --- 3.4: PARA EMPRESAS PAGE STYLES --- */
+
+/*
+=====================================================
+  CSS P/ PÁGINA "PARA EMPRESAS" (A MÁQUINA DE DECISÃO)
+=====================================================
+*/
+
+/* 1. SETUP DA PÁGINA (Classe no body para especificidade)
+--------------------------------------------------------- */
+.corporate-page-active .main-header {
+    /* Herda os estilos translúcidos já definidos para as outras páginas de vídeo */
+    background: linear-gradient(to bottom, rgba(10, 10, 10, 0.7) 0%, rgba(10, 10, 10, 0) 100%);
+}
+[data-theme="light"].corporate-page-active .main-header {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 100%);
+}
+/* ... etc ... */
+
+
+/* 2. HERO EMPRESARIAL (COM VÍDEO)
+-------------------------------------------------- */
+
+/* ========================================================================= */
+/* ==== CSS FINAL: HERO EMPRESARIAL ULTRA HIGH-TECH PRO MAX ============== */
+/* ========================================================================= */
+
+/* --- Configuração Principal da Seção Hero --- */
+.corporate-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 12rem 2rem; /* Aumenta o padding para um visual mais imponente e espaçoso */
+    text-align: left;   /* MUDA para alinhamento à esquerda, mais corporativo e profissional */
+    color: #FFF;         /* Cor padrão do texto */
+    min-height: 800px;  /* Garante altura suficiente para o vídeo e conteúdo */
+}
+
+
+/* --- CAMADA 0: Vídeo de Fundo --- */
+.corporate-video-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.corporate-video-wrapper video {
+    width: 100%; 
+    height: 100%;
+    object-fit: cover;
+    /* Filtro para dar um ar mais sério e menos saturado ao vídeo */
+    filter: brightness(0.5) saturate(0.8); 
+}
+
+
+/* --- CAMADA 1: Overlay de Foco Gradiente --- */
+.corporate-hero .hero-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    /* Gradiente linear da esquerda para direita, criando foco no texto e esmaecendo para a direita */
+    background: linear-gradient(90deg, 
+        rgba(10, 15, 26, 0.95) 30%, 
+        rgba(10, 15, 26, 0.6) 70%, 
+        rgba(10, 15, 26, 0.4) 100%
+    );
+}
+
+
+/* --- CAMADA 2: O Conteúdo Holográfico --- */
+.corporate-hero-content {
+    position: relative;
+    z-index: 3;
+    max-width: 900px; /* Limita a largura do conteúdo de texto para melhor legibilidade */
+}
+
+
+/* --- A Tag "Eyebrow" com Animação de Renderização de Caracteres --- */
+.corporate-eyebrow {
+    font-family: monospace;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: block;
+    /* Garante que o container tenha espaço para a animação */
+    padding-bottom: 10px; 
+}
+
+/* Animação para cada letra (span) */
+.corporate-eyebrow span {
+    opacity: 0;
+    animation: render-char 0.3s forwards;
+}
+
+/* Efeito em cascata com atraso para cada letra */
+.corporate-eyebrow span:nth-child(1)  { animation-delay: 0.1s; }
+.corporate-eyebrow span:nth-child(2)  { animation-delay: 0.15s; }
+.corporate-eyebrow span:nth-child(3)  { animation-delay: 0.2s; }
+.corporate-eyebrow span:nth-child(4)  { animation-delay: 0.25s; }
+.corporate-eyebrow span:nth-child(5)  { animation-delay: 0.3s; }
+.corporate-eyebrow span:nth-child(6)  { animation-delay: 0.35s; }
+.corporate-eyebrow span:nth-child(7)  { animation-delay: 0.4s; }
+.corporate-eyebrow span:nth-child(8)  { animation-delay: 0.45s; }
+/* ... Espaço ... */
+.corporate-eyebrow span:nth-child(10) { animation-delay: 0.55s; }
+.corporate-eyebrow span:nth-child(11) { animation-delay: 0.6s; }
+.corporate-eyebrow span:nth-child(12) { animation-delay: 0.65s; }
+.corporate-eyebrow span:nth-child(13) { animation-delay: 0.7s; }
+.corporate-eyebrow span:nth-child(14) { animation-delay: 0.75s; }
+.corporate-eyebrow span:nth-child(15) { animation-delay: 0.8s; }
+.corporate-eyebrow span:nth-child(16) { animation-delay: 0.85s; }
+.corporate-eyebrow span:nth-child(17) { animation-delay: 0.9s; }
+.corporate-eyebrow span:nth-child(18) { animation-delay: 0.95s; }
+.corporate-eyebrow span:nth-child(19) { animation-delay: 1.0s; }
+
+/* A animação em si que faz as letras aparecerem */
+@keyframes render-char {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+        text-shadow: 0 0 15px var(--primary-color);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        text-shadow: none;
+    }
+}
+
+
+/* --- O Título Principal --- */
+.corporate-headline {
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    color: var(--secondary-color);
+    animation: fade-in-up 1s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation-delay: 1.2s; /* Inicia após a renderização do eyebrow */
+    opacity: 0;
+}
+
+
+/* --- Linha Holográfica Decorativa que anuncia o título --- */
+.corporate-headline::before {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    margin-bottom: 1.5rem;
+    background: var(--primary-color);
+    box-shadow: 0 0 15px 1px var(--primary-color);
+}
+
+
+/* --- O Subtítulo --- */
+.corporate-subtitle {
+    font-size: clamp(1.1rem, 2vw, 1.3rem);
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.7;
+    animation: fade-in-up 1s forwards cubic-bezier(0.2, 0.8, 0.2, 1);
+    animation-delay: 1.4s; /* Inicia por último, após o título */
+    opacity: 0;
+}
+
+
+/* --- Animação Genérica Fade In Up (Reutilizável) --- */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* --- RESPONSIVIDADE PARA O HERO CORPORATIVO --- */
+@media (max-width: 768px) {
+    .corporate-hero {
+        padding: 8rem 1.5rem;
+        text-align: center; /* Volta ao centro no mobile para melhor impacto */
+    }
+
+    .corporate-hero-content {
+        max-width: 100%;
+    }
+    
+    .corporate-hero .hero-bg-overlay {
+        /* Torna o gradiente radial novamente no mobile para foco central */
+        background: radial-gradient(ellipse 90% 70% at 50% 50%, transparent 0%, #0A0F1A 100%);
+    }
+
+    .corporate-headline::before {
+        margin: 0 auto 1.5rem auto; /* Centraliza a linha decorativa */
+    }
+}/*
+   NOTA: O resto dos estilos (Dashboard, Divide, Engineering, etc.)
+   permanecem exatamente como já estavam. Não há necessidade de alterá-los.
+   Esta alteração é puramente no Hero.
+*/
+/* ========================================================================= */
+/* ========= CSS FINAL: DASHBOARD DE MÉTRICAS (PRO MAX) ================== */
+/* ========================================================================= */
+
+/* --- Configuração da Seção --- */
+/* ========================================================================= */
+/* ========= CSS FINAL: DASHBOARD DE MÉTRICAS (PRO MAX) ================== */
+/* ========================================================================= */
+
+/* --- Configuração da Seção --- */
+.dashboard-section {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    border-bottom: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* --- A Grade de Telemetria --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --- O Painel de Métrica Individual --- */
+.dashboard-metric {
+    position: relative;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    overflow: hidden;
+    
+    /* O efeito de vidro holográfico, assinatura da nossa marca */
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dashboard-metric:hover {
+    transform: translateY(-10px);
+    border-color: rgba(10, 132, 255, 0.7);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+}
+
+/* Indicador de status/brilho no canto */
+.dashboard-metric::before {
+    content: '';
+    position: absolute;
+    top: 15px; right: 15px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    box-shadow: 0 0 10px 1px var(--primary-color);
+    opacity: 0.7;
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-metric:hover::before {
+    opacity: 1;
+    box-shadow: 0 0 15px 3px var(--primary-color);
+}
+
+
+/* --- O Valor Numérico (Data Readout) --- */
+.metric-value {
+    font-size: clamp(3.5rem, 8vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+.roi-text { letter-spacing: -0.05em; }
+
+
+/* --- Unidade da Métrica (% ou +) --- */
+.metric-unit {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: rgba(10, 132, 255, 0.8);
+    margin-left: 0.25em;
+    text-shadow: 0 0 10px rgba(10, 132, 255, 0.5);
+}
+.metric-unit-hidden { display: none; }
+
+
+/* --- O Label/Descrição da Métrica --- */
+.metric-label {
+    flex-basis: 100%;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+
+/* --- Estilo da Métrica em Destaque --- */
+.highlight-metric {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 30px -5px rgba(10, 132, 255, 0.4);
+}
+.highlight-metric .metric-value {
+    color: var(--primary-color);
+    text-shadow: 0 0 20px var(--primary-color);
+    animation: pulse-roi 3s infinite ease-in-out;
+}
+.highlight-metric::before {
+    opacity: 1;
+    box-shadow: 0 0 15px 3px var(--primary-color);
+}
+
+@keyframes pulse-roi {
+    0%, 100% {
+        text-shadow: 0 0 20px var(--primary-color);
+        transform: scale(1);
+    }
+    50% {
+        text-shadow: 0 0 35px var(--primary-color), 0 0 50px rgba(10, 132, 255, 0.5);
+        transform: scale(1.05);
+    }
+}
+
+
+/* --- Responsividade do Dashboard --- */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+@media (max-width: 500px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* c. Divide Section */
+.divide-section { padding: 8rem 2rem; }
+.divide-container { display: flex; align-items: stretch; gap: 4rem; }
+.divide-line { width: 2px; background: linear-gradient(transparent, var(--c-primary), transparent); flex-shrink: 0; }
+.divide-column h3 { font-size: 2rem; margin-bottom: 1.5rem; }
+.divide-column p { font-size: 1.1rem; line-height: 1.8; color: var(--c-text-secondary); }
+.divide-column.problem h3 { color: var(--c-text-secondary); }
+.divide-column.solution h3 { color: var(--c-primary); }
+
+/* d. Engineering Section */
+.engineering-section { position: relative; overflow: hidden; background: var(--c-surface); }
+.engineering-bg-blueprint { position: absolute; top:0; left:0; width:100%; height:100%; background-image: linear-gradient(rgba(123,217,108,0.1) 1px,transparent 1px), linear-gradient(90deg,rgba(123,217,108,0.1) 1px,transparent 1px); background-size: 100px 100px; opacity: 0.5; z-index: 1; }
+.engineering-section .section-header { position: relative; z-index: 2; }
+.engineering-flow { display: flex; flex-direction: column; align-items: center; gap: 1rem; margin-top: 3rem; position: relative; z-index: 2; }
+.flow-item { background: var(--c-bg); border: 1px solid var(--c-border); border-radius: var(--radius); padding: 1.5rem 2rem; max-width: 600px; width: 100%; text-align: center; transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.flow-item:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.flow-item strong { font-weight: 600; }
+
+/* e. Closing Argument */
+.closing-argument-section { background-color: var(--c-bg); }
+.closing-content { position: relative; z-index: 2; text-align: center; }
+.closing-content h2 { font-size: clamp(2rem, 5vw, 3.5rem); max-width: 900px; margin: 0 auto 3rem auto; }
+.cta-box { background: var(--c-surface); padding: 3rem; border-radius: var(--radius); border: 1px solid var(--c-border); max-width: 700px; margin: 0 auto; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.1); }
+.cta-box p { font-size: 1.2rem; margin-bottom: 2rem; }
+.cta-box .cta-button { transform: scale(1.1); }
+.cta-box .cta-button:hover { transform: scale(1.15); }
+
+ Layout Global e Contexto --- */
+
+/* Força um contexto de tela cheia, ideal para esta página. */
+.contact-page-active {
+    overflow: hidden; 
+}
+
+/* O contêiner principal que cria a divisão 50/50. */
+.contact-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    height: 100vh;
+}
+
+/* Define o comportamento de scroll para ambas as colunas. */
+.contact-argument-terminal, .contact-form-wrapper {
+    height: 100vh;
+    overflow-y: auto;
+    /* Adiciona padding no topo para não ficar sob o header fixo/absoluto. */
+    padding-top: 120px; 
+}
+
+
+/* --- Coluna da Esquerda (Terminal de Comando) --- */
+
+.contact-argument-terminal {
+    background-color: #0A0A0A;
+    color: #FFF;
+    padding: 120px 4rem 4rem 4rem; /* Garante espaçamento completo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden; /* Importante para os efeitos de fundo */
+}
+
+/* Efeito de grade de scanner animada. */
+.terminal-overlay-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background-image: 
+        linear-gradient(rgba(10, 132, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 132, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: pan-grid 60s linear infinite;
+}
+@keyframes pan-grid {
+    from { background-position: 0 0; }
+    to { background-position: -500px -500px; }
+}
+
+/* Efeito de linha de varredura vertical. */
+.contact-argument-terminal::after {
+    content: '';
+    position: absolute;
+    top: -100%; left: 0;
+    width: 100%; height: 3px;
+    background: var(--c-primary);
+    box-shadow: 0 0 15px 1px var(--c-primary);
+    animation: scan-terminal 7s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+}
+@keyframes scan-terminal { to { top: 150%; } }
+
+/* Conteúdo central da coluna. */
+.argument-content {
+    max-width: 500px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Prompt do Terminal: >_ PROTOCOLO INICIADO */
+.terminal-prompt {
+    font-family: monospace;
+    font-weight: 600;
+    color: var(--c-primary);
+    text-shadow: 0 0 5px var(--c-primary);
+    /* Herda o "eyebrow" mas com mais identidade */
+}
+.argument-content h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.1; margin: 1rem 0;
+}
+.argument-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 3rem;
+}
+
+/* Seção de LOGS (substituindo os testimonials). */
+.mission-log-container {
+    margin-top: 3rem;
+    border: 1px solid rgba(10, 132, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.3);
+}
+.log-header {
+    padding: 0.75rem 1.25rem;
+    background: rgba(255,255,255,0.05);
+    font-family: monospace;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+    border-bottom: 1px solid rgba(10, 132, 255, 0.2);
+}
+.log-entry {
+    padding: 1.5rem 1.25rem;
+}
+.log-entry:not(:last-child) {
+    border-bottom: 1px dashed rgba(10, 132, 255, 0.15);
+}
+.log-entry p {
+    font-family: monospace; font-size: 1rem;
+    line-height: 1.6; color: #FFF;
+    margin-bottom: 0.8rem;
+    font-style: normal;
+}
+.log-entry span {
+    font-family: monospace;
+    color: #777;
+    font-weight: 400;
+}
+
+/*
+
+
+/* --- 4.3: Coluna do Formulário (Direita) --- */
+
+.contact-form-wrapper {
+    background: var(--c-surface);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.form-container { width: 100%; max-width: 500px; margin: auto 0; }
+.form-header { text-align: center; margin-bottom: 3rem; }
+.form-header h3 { font-size: 2.2rem; }
+.form-header p { color: var(--c-text-secondary); margin-top: 0.5rem; }
+.form-group-v2 { position: relative; margin-bottom: 2.5rem; }
+
+/* Efeito de Foco Iluminado */
+.form-group-v2::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 100%; height: 2px; background: var(--c-primary); transform: scaleX(0); transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1); transform-origin: center; }
+.form-group-v2:has(:focus)::after { transform: scaleX(1); }
+
+.contact-form-v2 input,
+.contact-form-v2 textarea,
+.contact-form-v2 select {
+    width: 100%; padding: 1rem 0.5rem; font-size: 1rem; color: var(--c-text);
+    background: transparent; border: none;
+    border-bottom: 1px solid var(--c-border);
+    border-radius: 0; position: relative; z-index: 2;
+    font-family: var(--font-primary);
+}
+.contact-form-v2 input:focus,
+.contact-form-v2 textarea:focus,
+.contact-form-v2 select:focus { outline: none; }
+
+/* Animação do Label Flutuante */
+.contact-form-v2 label { position: absolute; top: 1rem; left: 0.5rem; color: var(--c-text-secondary); pointer-events: none; transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1); z-index: 1; }
+.form-group-v2 input:focus + label,
+.form-group-v2 input:not(:placeholder-shown) + label,
+.form-group-v2 textarea:focus + label,
+.form-group-v2 textarea:not(:placeholder-shown) + label {
+    transform: translateY(-1.7rem) scale(0.85);
+    color: var(--c-primary);
+}
+.contact-form-v2 select { cursor: pointer; }
+
+
+/* --- 4.4: Botão de Submissão com Efeito Magnético --- */
+.submit-group { position: relative; }
+#magnetic-trail-canvas { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; pointer-events: none; z-index: 1; }
+.submit-button {
+    width: 100%; position: relative; z-index: 2;
+    background: linear-gradient(90deg, var(--c-primary), #4caf50);
+    color: #FFF; font-weight: 700;
+    padding: 1.2rem 2.5rem; border-radius: var(--radius);
+    border: none; cursor: pointer; font-size: 1.1rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 20px -5px rgba(123, 217, 108, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.submit-button:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 20px 30px -8px rgba(123, 217, 108, 0.6);
+}
+
+
+/* --- 4.5: Rodapé e Responsividade --- */
+.contact-page-footer { padding: 2rem 0; text-align: center; color: var(--c-text-secondary); font-size: 0.9rem; }
+.contact-page-footer a { color: var(--c-primary); font-weight: 600; }
+
+@media (max-width: 900px) {
+    .contact-container { grid-template-columns: 1fr; height: auto; }
+    .contact-argument, .contact-form-wrapper { height: auto; min-height: 100vh; }
+}
+/* ==/* ========================================================================= */
+/* ===== CSS: INTERFACE DE ENTRADA DE DADOS (FORMULÁRIO) - PRO MAX ===== */
+/* ========================================================================= */
+
+/* --- 1. Estrutura e Fundo da Coluna --- */
+
+.contact-form-wrapper {
+    /* MUDANÇA-CHAVE: Fundo escuro para unificar com a coluna esquerda */
+    background-color: #0d1117;
+    
+    position: relative; /* Necessário para o posicionamento do fundo ::before */
+    z-index: 1; /* Garante que o conteúdo fique sobre o fundo */
+    overflow: hidden; /* Mantém os efeitos contidos */
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 120px 4rem 4rem 4rem;
+}
+
+/* NOVO: Fundo de blueprint para a coluna do formulário */
+.contact-form-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1; /* Fica atrás de todo o conteúdo */
+    opacity: 0.05;
+    background-image: 
+        linear-gradient(var(--c-primary) 1px, transparent 1px),
+        linear-gradient(90deg, var(--c-primary) 1px, transparent 1px);
+    background-size: 100px 100px;
+    animation: pan-grid 90s linear infinite; /* Reutilizando animação de pan */
+}
+
+/* Container do Formulário */
+.form-container {
+    width: 100%;
+    max-width: 500px;
+    position: relative; /* Garante que o formulário fique acima do fundo */
+    z-index: 2;
+}
+
+
+/* --- 2. Cabeçalho do Formulário --- */
+
+.form-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+.form-header h3 {
+    font-size: 2.2rem;
+    color: var(--c-text); /* Continua usando a cor do tema */
+}
+.form-header p {
+    color: var(--c-text-secondary);
+    font-size: 1.1rem;
+}
+
+
+/* --- 3. Campos de Entrada (Input, Select, Textarea) --- */
+
+.contact-form-v2 .form-group-v2 {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.contact-form-v2 input,
+.contact-form-v2 textarea,
+.contact-form-v2 select {
+    width: 100%;
+    padding: 1.2rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    
+    /* MUDANÇA-CHAVE: Fundo e borda para o tema escuro */
+    background-color: rgba(10, 15, 26, 0.5); /* Semi-transparente */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: var(--c-text); /* Cor de texto do tema */
+    
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-form-v2 select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23a0a0a0'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2em;
+}
+
+.contact-form-v2 textarea { resize: vertical; }
+
+
+/* --- 4. Interação e Label Flutuante --- */
+
+.contact-form-v2 label {
+    position: absolute;
+    top: 1.2rem;
+    left: 1.2rem;
+    color: var(--c-text-secondary);
+    pointer-events: none;
+    transition: all 0.2s ease-out;
+}
+
+.contact-form-v2 input:focus,
+.contact-form-v2 textarea:focus,
+.contact-form-v2 select:focus {
+    outline: none;
+    /* MUDANÇA-CHAVE: Efeito de brilho high-tech no foco */
+    border-color: var(--c-primary);
+    box-shadow: 0 0 10px -2px var(--c-primary);
+}
+
+/* Sua lógica de label flutuante está perfeita, apenas garantindo a cor do fundo */
+.contact-form-v2 input:focus + label,
+.contact-form-v2 input:not(:placeholder-shown) + label,
+.contact-form-v2 textarea:focus + label,
+.contact-form-v2 textarea:not(:placeholder-shown) + label,
+.contact-form-v2 select:valid + label {
+    top: -0.7rem;
+    left: 0.9rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0 0.5rem;
+    
+    /* MUDANÇA-CHAVE: Garante que a cor do "recorte" corresponda ao fundo da coluna */
+    background-color: #0d1117; 
+    color: var(--c-primary);
+}
+
+
+/* --- 5. Botão de Transmissão (Submit) --- */
+
+.submit-group {
+    position: relative;
+    margin-top: 2.5rem;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 1.2rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #FFF;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    background: linear-gradient(90deg, #007BFF, var(--c-primary));
+    box-shadow: 0 5px 15px -5px rgba(10, 132, 255, 0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.submit-button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -8px rgba(10, 132, 255, 0.8);
+}
+
+
+/* --- 6. Rodapé do Formulário --- */
+
+.contact-page-footer {
+    padding-top: 3rem;
+    text-align: center;
+    color: var(--c-text-secondary);
+    font-size: 0.9rem;
+    max-width: 450px;
+}
+.contact-page-footer p {
+    line-height: 1.6;
+}
+.contact-page-footer a {
+    color: var(--c-primary);
+    font-weight: 600;
+    text-decoration: none; /* remove o sublinhado para um visual mais clean */
+}
+.contact-page-footer a:hover {
+    text-decoration: underline;
+}
+/* --- FOOTER --- */
+/* ========================================================================= */
+/* =========== CSS FINAL: FOOTER ULTRA HIGH-TECH PRO MAX ================ */
+/* ========================================================================= */
+
+/* --- Configuração Principal do Footer --- */
+.main-footer {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    padding: 2.5rem 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* --- Linha de Laser/Energia no Topo --- */
+.main-footer::before {
+    content: '';
+    position: absolute;
+    top: -1px; /* Posicionado perfeitamente na borda */
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+    box-shadow: 0 0 15px 1px var(--primary-color);
+    opacity: 0.7;
+    animation: scan-line 8s infinite ease-in-out;
+}
+
+@keyframes scan-line {
+    0%, 100% {
+        transform: scaleX(0);
+        left: 50%;
+    }
+    50% {
+        transform: scaleX(1);
+        left: 0%;
+    }
+}
+
+
+/* --- O Container de Conteúdo --- */
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    position: relative; /* Para ficar acima do ::before */
+    z-index: 2;
+}
+
+
+/* --- Texto de Copyright e Tagline --- */
+.footer-copyright {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.9rem;
+}
+.footer-tagline {
+    display: inline-block;
+    margin-left: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 500;
+}
+
+
+/* --- Os "Nós" das Redes Sociais --- */
+.social-links {
+    display: flex;
+    gap: 1rem;
+}
+.social-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+
+    /* Efeito de vidro para os nós */
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+/* O brilho do hover, como um botão de painel de controle */
+.social-icon:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-4px);
+    box-shadow: 0 0 15px -2px var(--primary-color), 0 0 25px -5px var(--primary-color);
+}
+
+
+/* --- Ícones SVG embutidos como Masks --- */
+/* O `mask-image` nos permite colorir o ícone dinamicamente */
+.social-icon i {
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.7);
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    -webkit-mask-size: contain;
+    transition: background-color 0.3s ease;
+}
+
+.social-icon:hover i {
+    background-color: white;
+}
+
+/* Definindo o "desenho" de cada ícone */
+.icon-instagram { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8c1.99 0 3.6-1.61 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m10.25 2a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.85 8.5 1.25 1.25 0 0 1 16.6 7.25a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z'/%3E%3C/svg%3E"); }
+.icon-linkedin { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-3.06v9.37h3.06v-5.6a1.76 1.76 0 0 1 1.76-1.76c.99 0 1.76.77 1.76 1.76v5.6h3.06zM6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68zm-1.69 2.54h3.38v9.37H5.19z'/%3E%3C/svg%3E"); }
+.icon-x { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='m18.9 3.2l-6.8 9.3l-5.9-9.3h-4.3l7.9 12.3l-8.4 14.3h4.3l6.5-11.2l6.2 11.2h4.3l-8.6-13.8l8.2-12.8z'/%3E%3C/svg%3E"); }
+
+
+/* --- RESPONSIVIDADE PARA O FOOTER --- */
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column; /* Empilha os elementos */
+        gap: 1.5rem; /* Ajusta o espaçamento vertical */
+        text-align: center;
+    }
+
+    .main-footer::before {
+        animation: none; /* Desativa a animação em mobile por performance e estética */
+        transform: scaleX(1);
+        left: 0;
+    }
+}
+
+/* --- ANIMATIONS & RESPONSIVE --- */
+.fade-in { animation: fadeIn 1s ease-out forwards; opacity: 0; }
+.fade-in-scroll { opacity: 0; transform: translateY(20px); transition: opacity 0.6s ease-out, transform 0.6s ease-out; }
+.fade-in-scroll.visible { opacity: 1; transform: translateY(0); }
+@keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 900px) {
+  .solutions-container { grid-template-columns: 1fr; }
+  .solution-visual { display: none; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .contact-form { grid-template-columns: 1fr; }
+  .form-group:not(.full-width) { grid-column: 1 / -1; }
+  .footer-content { flex-direction: column-reverse; gap: 2rem; }
+}
+
+/*
+/*
+=====================================================
+  ESTILOS ESPECÍFICOS PARA PÁGINA "PARA EMPRESAS"
+  (VERSÃO DEFINITIVA E CONSOLIDADA)
+=====================================================
+*/
+
+/* 1. CABEÇALHO DA PÁGINA E TÍTULO ESPETACULAR
+-------------------------------------------------- */
+/*
+=====================================================
+  CSS P/ PÁGINA "PARA EMPRESAS" (A MÁQUINA DE DECISÃO)
+=====================================================
+*/
+
+/* 1. HERO EMPRESARIAL: UMA DECLARAÇÃO DE PODER
+-------------------------------------------------- */
+
+.corporate-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 10rem 2rem;
+    text-align: center;
+    background: var(--c-bg);
+}
+/* Linhas de fundo sutis com animação de movimento */
+.corporate-hero-bg-lines {
+    position: absolute;
+    top: 0; left: 0;
+    width: 200%; height: 200%;
+    background-image:
+        linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 100px 100px;
+    transform: rotate(45deg);
+    animation: pan-lines 60s linear infinite;
+}
+[data-theme="dark"] .corporate-hero-bg-lines {
+    background-image: linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+}
+@keyframes pan-lines {
+    from { transform: rotate(45deg) translate(0, 0); }
+    to { transform: rotate(45deg) translate(-500px, -500px); }
+}
+
+.corporate-hero-content {
+    position: relative;
+    z-index: 2;
+}
+.corporate-hero-content h1 {
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    line-height: 1.2;
+    margin: 1rem 0;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+.corporate-hero-content p {
+    font-size: 1.3rem;
+    color: var(--c-text-secondary);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ========================================================================= */
+/* ===== CSS: TELEMETRIA DA DOMINÂNCIA (DASHBOARD) - PRO MAX ============= */
+/* ========================================================================= */
+
+/* --- Configuração da Seção --- */
+#telemetry-section {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+#telemetry-section .process-background-grid {
+    /* Herda o fundo da seção anterior para consistência */
+    position: absolute;
+    inset: 0;
+    opacity: 0.2;
+}
+
+/* --- A Grade de Telemetria --- */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --- O Painel de Métrica Individual --- */
+.dashboard-metric {
+    position: relative;
+    padding: 2.5rem 2rem;
+    overflow: hidden;
+    
+    /* O efeito de vidro holográfico, a assinatura da Cronos */
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    
+    /* Layout interno do painel */
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.dashboard-metric:hover {
+    transform: translateY(-10px);
+    border-color: rgba(10, 132, 255, 0.7);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+}
+
+/* Indicador de status/brilho no canto */
+.dashboard-metric::before {
+    content: '';
+    position: absolute;
+    top: 15px; right: 15px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background-color: var(--c-primary);
+    box-shadow: 0 0 10px 1px var(--c-primary);
+    opacity: 0.7;
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-metric:hover::before {
+    opacity: 1;
+    box-shadow: 0 0 15px 3px var(--c-primary);
+}
+
+
+/* --- O Valor Numérico (Data Readout) --- */
+.metric-value {
+    font-size: clamp(3.5rem, 8vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--secondary-color); /* Branco ou off-white */
+    text-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+.roi-text { letter-spacing: -0.05em; } /* Ajuste fino para o texto "ROI" */
+
+
+/* --- Unidade da Métrica (% ou + ou X) --- */
+.metric-unit {
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: rgba(10, 132, 255, 0.8);
+    margin-left: 0.25em;
+    text-shadow: 0 0 10px rgba(10, 132, 255, 0.5);
+}
+
+
+/* --- O Label/Descrição da Métrica --- */
+.metric-label {
+    flex-basis: 100%;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+
+/* --- Estilo da Métrica em Destaque (ROI) --- */
+.highlight-metric {
+    border-color: var(--c-primary);
+    box-shadow: 0 0 30px -5px rgba(10, 132, 255, 0.4);
+}
+.highlight-metric .metric-value {
+    color: var(--c-primary);
+    /* Animação de pulso para o núcleo */
+    animation: pulse-roi 3s infinite ease-in-out;
+}
+.highlight-metric::before {
+    opacity: 1;
+    box-shadow: 0 0 15px 3px var(--c-primary);
+}
+
+/* Animação que faz o valor de ROI pulsar */
+@keyframes pulse-roi {
+    0%, 100% {
+        text-shadow: 0 0 20px var(--c-primary);
+        transform: scale(1);
+    }
+    50% {
+        text-shadow: 0 0 35px var(--c-primary), 0 0 50px rgba(10, 132, 255, 0.5);
+        transform: scale(1.05);
+    }
+}
+/* ========================================================================= */
+/* ===== CSS: CAMPO DE BATALHA DIGITAL (A DIVISÃO) - PRO MAX ============= */
+/* ========================================================================= */
+
+#comparison-section {
+    background-color: #0A0F1A; /* Fundo azul-escuro padrão */
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+}
+
+/* Reutilizando o fundo de grid para consistência */
+#comparison-section .service-background-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image:
+        linear-gradient(rgba(10, 132, 255, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 132, 255, 0.15) 1px, transparent 1px);
+    background-size: 50px 50px;
+}
+
+#comparison-section .section-header,
+#comparison-section .comparison-container {
+    position: relative;
+    z-index: 2;
+}
+
+.comparison-container {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+}
+
+/* O CARD HOLOGRÁFICO */
+.comparison-card {
+    flex: 1;
+    padding: 30px 35px;
+    border-radius: 20px;
+    /* Efeito de Vidro/Glassmorphism */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    transition: all 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
+}
+
+.comparison-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.card-icon-wrapper {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255,255,255,0.05);
+    border: 1px solid;
+}
+
+.card-icon {
+    width: 24px;
+    height: 24px;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-position: center;
+    mask-position: center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
+
+/* O Divisor de Energia no meio */
+.comparison-divider {
+    flex: 0 0 3px;
+    border-radius: 3px;
+    background-color: rgba(10, 132, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.energy-flow {
+    position: absolute;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(
+        transparent,
+        rgba(10, 132, 255, 0.8),
+        transparent
+    );
+    box-shadow: 0 0 15px 2px var(--c-primary);
+    animation: flow-animation 4s linear infinite;
+}
+
+@keyframes flow-animation {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(250%); }
+}
+
+
+/* --- ESTILOS DE STATUS ESPECÍFICOS --- */
+
+/* Estilo do Card "Crítico" (Problema) */
+.status-critical .card-icon-wrapper {
+    border-color: rgba(255, 69, 69, 0.5);
+    animation: pulse-warning 2.5s infinite ease-in-out;
+}
+.status-critical h3 { color: rgba(255,255,255,0.7); font-size: 1.6rem; }
+.status-critical p { color: rgba(255,255,255,0.6); }
+.status-critical .icon-alert {
+    background-color: #FF4545;
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M13 13.5h-2V7.5h2v6zm0 4.5h-2v-2h2v2zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'/%3E%3C/svg%3E");
+}
+
+/* Estilo do Card "Ótimo" (Solução Cronos) */
+.status-optimal .card-icon-wrapper {
+    border-color: rgba(10, 132, 255, 0.8);
+}
+.status-optimal:hover { border-color: var(--c-primary); }
+.status-optimal h3 {
+    color: var(--c-primary);
+    text-shadow: 0 0 10px var(--c-primary);
+    font-size: 1.6rem;
+}
+.status-optimal p { color: rgba(255,255,255,0.9); }
+.status-optimal p strong { color: #FFF; font-weight: 600; }
+.status-optimal .icon-shield {
+    background-color: var(--c-primary);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-1.04 16L6.5 12.55l1.41-1.41L10.96 14l5.13-5.13 1.41 1.41L10.96 17z'/%3E%3C/svg%3E");
+}
+
+/* Animação para o brilho do aviso */
+@keyframes pulse-warning {
+    0%, 100% { box-shadow: 0 0 10px -2px #FF4545; }
+    50% { box-shadow: 0 0 20px 2px #FF4545; }
+}
+
+
+/* --- RESPONSIVIDADE --- */
+@media (max-width: 992px) {
+    .comparison-container {
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+    .comparison-divider {
+        width: 60%;
+        height: 3px;
+        align-self: center;
+    }
+    .energy-flow {
+        width: 40%;
+        height: 100%;
+        animation-name: flow-animation-horizontal;
+    }
+    @keyframes flow-animation-horizontal {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(250%); }
+    }
+}
+
+/* ========================================================================= */
+/* ==== CSS: PIPELINE DE CONSTRUÇÃO (PROCESSO) - PRO MAX ================ */
+/* ========================================================================= */
+
+/* --- Configuração Principal da Seção --- */
+#process-section {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.process-background-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.3;
+    background-image: 
+        linear-gradient(rgba(10, 132, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 132, 255, 0.1) 1px, transparent 1px);
+    background-size: 50px 50px;
+    /* Efeito que faz a grade desaparecer no fundo */
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+}
+
+#process-section .section-header {
+    position: relative;
+    z-index: 1;
+}
+
+/* --- A Pipeline --- */
+.process-pipeline-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start; /* Alinha os cards pelo topo */
+    position: relative;
+    z-index: 1;
+    gap: 1.5rem;
+}
+
+/* --- O "Nó" / Módulo do Processo --- */
+.pipeline-node {
+    flex-basis: 22%; /* Cada nó ocupa uma porção do espaço */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px 20px;
+    
+    /* Estilo Vidro/Holográfico */
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.pipeline-node:hover {
+    transform: translateY(-10px);
+    border-color: rgba(10, 132, 255, 0.7);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.node-header {
+    margin-bottom: 20px;
+}
+
+.step-number-wrapper {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Núcleo de energia pulsante */
+    background: radial-gradient(circle, rgba(10, 132, 255, 0.1) 0%, transparent 70%);
+    border: 1px solid rgba(10, 132, 255, 0.2);
+    
+    animation: pulse-core 3s infinite ease-in-out;
+}
+
+@keyframes pulse-core {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 10px -5px var(--c-primary); }
+    50% { transform: scale(1.05); box-shadow: 0 0 20px 0px var(--c-primary); }
+}
+
+.step-number {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--secondary-color); /* Branco ou off-white do seu tema */
+    text-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+.node-title {
+    font-size: 1.3rem;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.node-description {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* --- O Conector Animado --- */
+.pipeline-connector {
+    flex-grow: 1; /* Ocupa o espaço entre os nós */
+    height: 2px;
+    align-self: center; /* Centraliza o conector verticalmente */
+    margin-top: -80px; /* Alinha o conector com os "núcleos" dos nós */
+    background-color: rgba(10, 132, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.pipeline-connector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 25%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--c-primary), transparent);
+    box-shadow: 0 0 8px 1px var(--c-primary);
+    transform: translateX(-100%);
+    
+    /* Animação do fluxo de dados */
+    animation: data-flow 3s infinite linear;
+    animation-delay: calc(var(--step) * 1s); /* Delay para criar efeito cascata (precisaria de JS ou inline-style) - Por enquanto, sem delay */
+}
+
+@keyframes data-flow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(500%); /* Ajuste para atravessar o container */ }
+}
+
+
+/* --- REVISÃO DE RESPONSIVIDADE --- */
+@media (max-width: 992px) {
+    .process-pipeline-container {
+        flex-direction: column;
+        align-items: stretch; /* Cards ocupam largura total */
+        gap: 20px;
+    }
+    
+    /* Transforma conector em uma seta/indicador vertical */
+    .pipeline-connector {
+        flex-grow: 0;
+        height: 50px;
+        width: 2px;
+        align-self: center;
+        margin: 10px 0; /* Reseta margem */
+    }
+
+    .pipeline-connector::before {
+        width: 100%;
+        height: 25%;
+        background: linear-gradient(180deg, transparent, var(--c-primary), transparent);
+        transform: translateY(-100%);
+        animation-name: data-flow-vertical;
+    }
+
+    @keyframes data-flow-vertical {
+        0% { transform: translateY(-100%); }
+        100% { transform: translateY(500%); }
+    }
+}
+/* ========================================================================= */
+/* ===== CSS: IGNIÇÃO ESTRATÉGICA (CTA FINAL) - PRO MAX ================ */
+/* ========================================================================= */
+
+/* --- Configuração Principal da Seção --- */
+#final-cta {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+    padding: 120px 2rem; /* Mais espaçamento para impacto máximo */
+}
+
+
+/* --- O Foco de Luz/Energia do Fundo --- */
+.cta-background-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150%;
+    padding-bottom: 150%; /* Truque para manter proporção de círculo */
+    z-index: 1;
+    background: radial-gradient(ellipse at 50% 50%, rgba(10, 132, 255, 0.15) 0%, transparent 50%);
+    pointer-events: none; /* Garante que não bloqueie interações */
+}
+
+
+/* --- O Painel de Conteúdo Holográfico --- */
+.final-cta-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 40px;
+    
+    /* Painel principal com efeito de vidro */
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+
+/* --- Tipografia de Impacto --- */
+.cta-headline {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.4;
+    color: var(--secondary-color); /* Branco ou off-white do tema */
+    text-shadow: 0 0 10px rgba(255,255,255,0.2);
+    margin-bottom: 1rem;
+}
+
+.cta-subheadline {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.75);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+}
+
+
+/* --- O Botão de "Ignição" Final --- */
+.final-cta-button {
+    display: inline-block;
+    padding: 18px 40px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+    background: linear-gradient(45deg, #007BFF, var(--c-primary));
+    border: none;
+    border-radius: 14px;
+    
+    /* Sombra de brilho que será animada */
+    box-shadow: 0 0 20px rgba(10, 132, 255, 0.5),
+                0 0 35px rgba(10, 132, 255, 0.4),
+                inset 0 1px 1px rgba(255,255,255,0.3);
+
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    
+    /* Animação de pulso contínuo */
+    animation: pulse-cta-button 2.5s infinite ease-in-out;
+}
+
+@keyframes pulse-cta-button {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(10, 132, 255, 0.5),
+                    0 0 35px rgba(10, 132, 255, 0.4),
+                    inset 0 1px 1px rgba(255,255,255,0.3);
+    }
+    50% {
+        box-shadow: 0 0 30px rgba(10, 132, 255, 0.7),
+                    0 0 50px rgba(10, 132, 255, 0.6),
+                    inset 0 1px 1px rgba(255,255,255,0.3);
+    }
+}
+
+/* O efeito no hover intensifica a animação e levanta o botão */
+.final-cta-button:hover {
+    transform: translateY(-5px) scale(1.05);
+    animation-play-state: paused; /* Pausa a animação para dar controle ao usuário */
+    box-shadow: 0 0 35px rgba(10, 132, 255, 0.8),
+                0 0 60px rgba(10, 132, 255, 0.7),
+                inset 0 1px 1px rgba(255,255,255,0.3);
+}
+
+
+/* Efeito "glare" que passa pelo botão no hover */
+.final-cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 75%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transform: skewX(-25deg);
+    transition: left 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.final-cta-button:hover::before {
+    left: 150%;
+}
+
+
+/* --- RESPONSIVIDADE PARA O CTA FINAL --- */
+@media (max-width: 768px) {
+    #final-cta {
+        padding: 80px 1.5rem;
+    }
+    .final-cta-content {
+        padding: 30px 25px;
+    }
+    .cta-headline {
+        font-size: 1.8rem;
+    }
+    .final-cta-button {
+        padding: 16px 32px;
+        font-size: 1.1rem;
+    }
+}
+
+/* O canvas da Grade de Singularidade herda seus estilos globais,
+   então não precisa de novas regras, apenas do posicionamento na seção.
+*
+=====================================================
+  NAVEGAÇÃO MOBILE E MENU HAMBÚRGUER (VERSÃO DEFINITIVA)
+=====================================================
+*/
+
+/* 1. SETUP INICIAL & CONTROLES DO HEADER
+-------------------------------------------------- */
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* Por padrão, o menu mobile e seus componentes estão escondidos em telas grandes. */
+#hamburger-button, #mobile-menu, #menu-backdrop {
+  display: none;
+}
+
+
+/* 2. MEDIA QUERY - PONTO DE ATIVAÇÃO MOBILE
+   Aqui, a mágica acontece. Apenas em telas com 768px de largura ou menos.
+------------------------------------------------------------------------- */
+/* ========================================================================= */
+/* ====== HEADER GLOBAL CRONOS v1.0 - PARTE 2: NAVEGAÇÃO MOBILE ======== */
+/* ========================================================================= */
+
+@media (max-width: 768px) {
+
+  /* --- 1. Estrutura e Controles Essenciais --- */
+  .nav-links {
+    display: none; /* Esconde o menu desktop */
+  }
+  
+  /* Garante que todos os elementos mobile sejam exibidos */
+  .header-controls,
+  #hamburger-button, 
+  #mobile-menu, 
+  #menu-backdrop {
+      display: block; 
+  }
+
+  .header-controls { display: flex; align-items: center; gap: 1.5rem; }
+  
+  #hamburger-button {
+    display: flex; flex-direction: column; justify-content: space-around;
+    width: 28px; height: 24px; background: transparent; border: none;
+    cursor: pointer; padding: 0; z-index: 1012; 
+  }
+  
+  #hamburger-button span {
+    width: 100%; height: 3px; background-color: var(--c-text);
+    border-radius: 5px; transition: all 0.3s ease-in-out;
+  }
+
+  /* --- 2. Painel Lateral (Slide-out Menu) --- */
+  #mobile-menu {
+    position: fixed; top: 0; right: 0;
+    width: 280px; height: 100vh;
+    padding: 7rem 1.5rem 2rem;
+    z-index: 1011;
+    overflow-y: auto;
+    
+    /* Estilo "Glassmorphism" High-Tech */
+    background-color: rgba(10, 15, 26, 0.8);
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+
+    /* Animação de entrada e saída */
+    transform: translateX(100%); 
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  [data-theme="light"] #mobile-menu {
+    background-color: rgba(255, 255, 255, 0.75);
+    border-left-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* --- 3. Fundo Backdrop e Animações de Estado Aberto --- */
+  #menu-backdrop {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1010;
+      opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0s 0.4s;
+  }
+
+  /* Regras ativadas pela classe '.mobile-menu-open' no <body> */
+  .mobile-menu-open { overflow: hidden; } /* Trava o scroll da página */
+  
+  .mobile-menu-open #mobile-menu { transform: translateX(0); } /* Mostra o menu */
+  
+  .mobile-menu-open #menu-backdrop { /* Mostra o fundo */
+      opacity: 1; visibility: visible; transition-delay: 0s;
+  }
+  
+  /* Animação do botão hambúrguer para 'X' */
+  .mobile-menu-open #hamburger-button span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+  .mobile-menu-open #hamburger-button span:nth-child(2) { opacity: 0; }
+  .mobile-menu-open #hamburger-button span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
+
+    /* --- 4. Estilo dos Links e Botão CTA Internos --- */
+  
+  #mobile-nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  /* Linha separadora entre os itens principais */
+  #mobile-nav-links > .nav-item {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  [data-theme="light"] #mobile-nav-links > .nav-item { 
+    border-bottom-color: rgba(0, 0, 0, 0.1); 
+  }
+  
+  /* Estilo do link principal clicável (ex: "Serviços", "Resultados") */
+  #mobile-nav-links > .nav-item > a {
+    display: block;
+    padding: 1.1rem 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--c-text-secondary);
+    transition: color 0.3s ease;
+  }
+
+  #mobile-nav-links > .nav-item > a:hover {
+    color: var(--c-primary);
+  }
+
+  /* Estilo especial para o botão CTA "Contato" dentro do menu */
+  #mobile-nav-links .nav-cta-button {
+      display: block;
+      text-align: center;
+      margin: 1.5rem 0 1rem 0; /* Espaçamento extra */
+      padding-top: 1rem;
+      padding-bottom: 1rem;
+      border: 1px solid var(--c-primary);
+      border-radius: 8px; /* Cantos arredondados */
+      background: transparent;
+      color: var(--c-primary) !important;
+  }
+  
+  /* Efeito no hover para o botão CTA */
+  #mobile-nav-links .nav-cta-button:hover {
+      background-color: var(--c-primary);
+      color: #0A0F1A !important;
+  }
+
+    /* --- 5. Lógica Visual do Acordeão Dropdown --- */
+  
+  #mobile-nav-links .dropdown-toggle { 
+    position: relative; /* Contexto para a seta */
+    width: 100%;
+  }
+  
+  /* A seta indicadora de dropdown */
+  #mobile-nav-links .dropdown-toggle::after {
+    content: '›'; 
+    position: absolute; 
+    right: 0.5rem; 
+    top: 50%;
+    transform: translateY(-50%) rotate(90deg);
+    font-size: 1.8rem; 
+    font-weight: 300;
+    color: var(--c-text-secondary);
+    transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  /* Gira a seta quando o dropdown está aberto */
+  #mobile-nav-links .nav-item.open > .dropdown-toggle::after {
+    transform: translateY(-50%) rotate(-90deg);
+  }
+
+  /* O container do submenu (inicialmente escondido) */
+  #mobile-nav-links .dropdown-menu {
+    list-style: none;
+    padding: 0; 
+    margin: 0;
+    
+    background: rgba(0,0,0,0.15); /* Fundo sutil para destacar o aninhamento */
+    
+    max-height: 0; /* Começa com altura zero */
+    overflow: hidden; /* Esconde o conteúdo que transborda */
+    
+    /* A mágica da animação de acordeão */
+    transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+  }
+  
+  [data-theme="light"] #mobile-nav-links .dropdown-menu { 
+    background: rgba(0,0,0,0.05); 
+  }
+
+  /* Quando aberto (.open), o submenu ganha altura e padding */
+  #mobile-nav-links .nav-item.open > .dropdown-menu {
+    max-height: 20rem; /* Uma altura máxima generosa para caber os itens */
+    padding-bottom: 0.5rem; /* Espaçamento interno na parte inferior */
+  }
+  
+  /* Estilo dos itens e links dentro do submenu */
+  #mobile-nav-links .dropdown-menu li {
+      padding-left: 1.5rem; /* Indentação para criar hierarquia visual */
+  }
+  
+  #mobile-nav-links .dropdown-menu li a {
+      font-size: 1rem;
+      font-weight: 400; /* Texto mais leve para os sub-itens */
+      padding: 0.8rem 0.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05); /* Separador mais sutil ainda */
+  }
+
+  [data-theme="light"] #mobile-nav-links .dropdown-menu li a { 
+    border-bottom-color: rgba(0,0,0,0.05); 
+  }
+
+}
+/*
+=====================================================
+  CSS PARA PÁGINA "PARA VOCÊ" (VERSÃO GENIAL)
+=====================================================
+*/
+/* ========================================================================= */
+/* ==== CSS: HERO TERMINAL DE GÊNESE (CLOUT BUILDER) - PRO MAX ========= */
+/* ========================================================================= */
+
+/* --- Configuração Principal da Hero Section --- */
+#builder-hero {
+    position: relative;
+    height: 100vh;
+    min-height: 800px;
+    color: #FFF; /* Cor do texto padrão para o hero escuro */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    overflow: hidden;
+    background-color: #0A0F1A; /* Fallback de cor de fundo */
+}
+
+
+/* --- CAMADA 0: O Vídeo de Fundo --- */
+.hero-video-wrapper {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+.hero-video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.5) saturate(0.9); /* Escurece e dessatura um pouco o vídeo */
+}
+
+
+/* --- CAMADA 1: O Overlay de Foco e Cor --- */
+#builder-hero .hero-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    /* Gradiente que foca a atenção no centro do texto */
+    background: radial-gradient(ellipse 70% 60% at 50% 50%, transparent 0%, #0A0F1A 100%);
+    opacity: 0.9;
+}
+
+
+/* --- CAMADA 2: O Conteúdo Principal --- */
+.hero-content-builder {
+    position: relative;
+    z-index: 3;
+    max-width: 850px; /* Limita a largura do conteúdo para melhor leitura */
+    animation: fade-in-up 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.builder-eyebrow {
+    font-family: monospace;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--c-primary);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 1.5rem;
+}
+
+.hero-headline {
+    font-size: clamp(3rem, 7vw, 5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    text-shadow: 0 0 15px rgba(255,255,255,0.1);
+    margin-bottom: 1.5rem;
+}
+
+/* O texto "Renderizada por IA" com destaque e pulso */
+.highlight-ai {
+    color: var(--c-primary); /* Azul/Verde primário */
+    animation: pulse-ai-highlight 3s infinite ease-in-out;
+}
+
+@keyframes pulse-ai-highlight {
+    0%, 100% {
+        text-shadow: 0 0 20px var(--c-primary), 0 0 40px rgba(10, 132, 255, 0.5);
+    }
+    50% {
+        text-shadow: 0 0 30px rgba(10, 132, 255, 0.5), 0 0 50px var(--c-primary);
+    }
+}
+
+.hero-subheadline {
+    font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    max-width: 700px;
+    margin: 0 auto 3rem;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1.7;
+}
+
+/* Reutilizando os estilos dos botões da homepage para consistência */
+.hero-cta-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+.hero-cta-group .primary-cta {
+     background: linear-gradient(45deg, var(--c-primary), #00A3FF);
+     /* Se precisar, copie todos os estilos do .primary-cta da sua homepage aqui */
+}
+.hero-cta-group .secondary-cta {
+    /* Copie todos os estilos do .secondary-cta da sua homepage aqui */
+    /* ... com background-color, border-color, backdrop-filter, etc ... */
+}
+
+/* --- CAMADA 3: O Indicador de Rolagem Animado --- */
+#builder-hero .scroll-down-indicator {
+    /* Reutilizando a mesma classe da outra página, não precisa de estilo novo se já existir */
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 4;
+}
+/* ========================================================================= */
+/* ==== CSS: SINGULARIDADE DIGITAL (TRANSFORMAÇÃO) - PRO MAX =========== */
+/* ========================================================================= */
+
+#singularity-section {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.singularity-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 2rem;
+    margin-top: 4rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Base para os cards "Antes" e "Depois" */
+.singularity-node {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 300px;
+    padding: 25px;
+    
+    /* Estilo de vidro */
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+.node-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+.singularity-node h4 {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.node-footer {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 1.5rem;
+    margin-top: auto;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* --- ESTADO CAÓTICO (ANTES) --- */
+.state-chaotic h4 { color: rgba(255, 69, 69, 0.7); }
+.state-chaotic { border-color: rgba(255, 69, 69, 0.3); }
+.state-chaotic .node-footer { color: rgba(255, 255, 255, 0.5); }
+.chaotic-streams {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+}
+.chaotic-streams span {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    background: rgba(255, 69, 69, 0.1);
+    border: 1px solid rgba(255, 69, 69, 0.2);
+    color: rgba(255,255,255,0.7);
+    animation: flicker 4s infinite ease-in-out;
+}
+/* Atraso de animação para não piscarem todos juntos */
+.chaotic-streams span:nth-child(2) { animation-delay: -0.5s; }
+.chaotic-streams span:nth-child(3) { animation-delay: -1.5s; }
+.chaotic-streams span:nth-child(4) { animation-delay: -2s; }
+
+@keyframes flicker {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.98); }
+}
+
+/* --- ESTADO ESTÁVEL (DEPOIS) --- */
+.state-stable h4 { color: var(--c-primary); }
+.state-stable { border-color: rgba(10, 132, 255, 0.5); }
+.state-stable .node-footer { color: var(--c-primary); }
+
+.stable-hub {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: white;
+    background: radial-gradient(circle, rgba(10, 132, 255, 0.3) 0%, transparent 70%);
+    position: relative;
+}
+.hub-ring {
+    position: absolute;
+    inset: -10px;
+    border-radius: 50%;
+    border: 1px solid rgba(10, 132, 255, 0.3);
+    animation: slow-spin 10s linear infinite;
+}
+.hub-ring:nth-of-type(2) {
+    inset: -20px;
+    animation-duration: 15s;
+    animation-direction: reverse;
+    opacity: 0.5;
+}
+@keyframes slow-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+
+/* --- O PROCESSADOR CENTRAL (IA) --- */
+.singularity-processor {
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+.processor-core {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    background-color: var(--c-primary);
+    border-radius: 50%;
+    animation: pulse-core 2s infinite ease-in-out;
+    box-shadow: 0 0 30px var(--c-primary);
+}
+.processor-core::before, .processor-core::after {
+    content: '';
+    position: absolute;
+    inset: -15px;
+    border-radius: 50%;
+    border: 2px solid;
+    border-color: var(--c-primary) transparent var(--c-primary) transparent;
+    animation: slow-spin 3s linear infinite;
+}
+.processor-core::after {
+    inset: -30px;
+    animation-direction: reverse;
+}
+
+
+/* --- RESPONSIVIDADE DA SINGULARIDADE --- */
+@media(max-width: 900px) {
+    .singularity-grid {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
+    }
+    .singularity-processor {
+        margin: 1rem auto;
+        transform: rotate(90deg); /* Vira o processador para apontar para baixo */
+    }
+}
+/* ========================================================================= */
+/* ==== 3 CSS: ENGENHARIA DE LEGADO (OS MÓDULOS) - PRO MAX =============== */
+/* ========================================================================= */
+
+#engineering-section {
+    background-color: #0d1117; /* Um preto-azulado, cor de fundo do GitHub */
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+}
+
+.blueprint-background {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image: 
+        linear-gradient(rgba(10, 132, 255, 0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(10, 132, 255, 0.2) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse, black 50%, transparent 100%);
+}
+
+.engineering-blueprint-container {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 4rem;
+    margin-top: 4rem;
+}
+
+/* O Núcleo Central representando o Site */
+.central-core {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.core-icon {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    border-radius: 50%;
+    border: 1px solid rgba(10, 132, 255, 0.3);
+    animation: pulse-core 3s infinite ease-in-out;
+}
+.core-icon::before { /* O ícone central SVG */
+    content: '';
+    position: absolute;
+    inset: 25%;
+    background-color: var(--c-primary);
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM6.1 17.3l1.4-1.4c-.4-.5-.8-1-1.1-1.5l-1.9.9c.5.8 1.1 1.6 1.6 2zm1.5-3.8c.3-.5.6-1 .9-1.4l1.4 1.4c-.4.5-.8 1-1.2 1.5L7.6 13.5zM12 20c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-6-8c0 .4.1.8.1 1.2L8.8 12c-.1-.4-.1-.8-.1-1.2 0-.4 0-.8.1-1.2L6.1 10C6 10.4 6 10.8 6 11.2zM12 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm4.4-1.3c-.3.5-.7 1-1.1 1.5l1.4 1.4c.5-.8 1.1-1.5 1.6-2l-1.9-.9zM15.2 12l2.7.8c.1-.4.1-.8.1-1.2s0-.8-.1-1.2l-2.7.8c0 .4.1.8.1 1.2z'/%3E%3C/svg%3E");
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+}
+.core-label {
+    font-family: monospace;
+    font-weight: 600;
+    color: var(--c-primary);
+    letter-spacing: 0.1em;
+}
+
+
+/* Grade dos Módulos */
+.modules-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+.module-card {
+    position: relative;
+    padding: 30px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02), transparent);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(8px);
+    transition: all 0.3s ease-out;
+}
+.module-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(10, 132, 255, 0.6);
+}
+
+/* Linha de energia no topo do card */
+.module-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--c-primary), transparent);
+    opacity: 0;
+    transform: scaleX(0.5);
+    transition: all 0.4s ease;
+}
+.module-card:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+    box-shadow: 0 0 10px 1px var(--c-primary);
+}
+
+.module-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+}
+.module-icon {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--c-primary);
+    box-shadow: 0 0 8px 1px var(--c-primary);
+}
+.module-header h4 {
+    font-size: 1.4rem;
+    color: white;
+}
+.module-body p {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.7;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .modules-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* ========================================================================= */
+/* ==== CSS: A PONTE PARA A MAESTRIA (SERVIÇOS) - PRO MAX ============== */
+/* ========================================================================= */
+
+#mastery-bridge-section {
+    background-color: #0A0F1A;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fundo high-tech, sutil, que simula um data-stream */
+.bridge-background {
+    position: absolute;
+    inset: 0;
+    opacity: 0.07;
+    background-image:
+        linear-gradient(rgba(10, 132, 255, 0.5) 1px, transparent 1px);
+    background-size: 3px 3px;
+
+    mask-image: radial-gradient(ellipse at 50% 0, black 30%, transparent 80%);
+}
+
+
+
+
+.bridge-services-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    position: relative;
+    z-index: 2;
+    margin-top: 4rem;
+}
+
+/* Card Base dos Tiers de Serviço */
+.service-tier-card {
+    display: flex;
+    flex-direction: column;
+    padding: 30px 35px;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.04), transparent);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(12px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.service-tier-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+/* Cabeçalho do Card */
+.service-tier-header {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    position: relative;
+}
+.tier-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: rgba(10, 132, 255, 0.1);
+    border: 1px solid rgba(10, 132, 255, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tier-icon {
+    width: 28px; height: 28px;
+    background-color: var(--c-primary);
+    mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+    -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+}
+.deploy-icon { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.9L6.5 12.4l1.4-1.4 3.1 3.1 5.6-5.6L18 10l-7 7z'/%3E%3C/svg%3E"); }
+.quantum-icon { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 3a9 9 0 00-9 9H0l4 4 4-4H5a7 7 0 017-7 7 7 0 017 7 7 7 0 01-7 7v2a9 9 0 009-9 9 9 0 00-9-9zM1 12l3-3v6l-3-3zM23 12l-3-3v6l3-3zM12 1a2 2 0 00-2 2v2a2 2 0 104 0V3a2 2 0 00-2-2zm0 18a2 2 0 00-2 2v2a2 2 0 104 0v-2a2 2 0 00-2-2z'/%3E%3C/svg%3E");}
+.tier-title h3 { font-size: 1.8rem; line-height: 1.2; color: #FFF; }
+.tier-title span { font-size: 1rem; color: rgba(255, 255, 255, 0.6); }
+
+/* Corpo e Lista de Features */
+.service-tier-body {
+    flex-grow: 1;
+    margin: 1.5rem 0;
+}
+.service-tier-body p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+.service-features-list {
+    list-style: none;
+    color: rgba(255,255,255,0.85);
+}
+.service-features-list li {
+    padding-left: 2rem;
+    position: relative;
+    margin-bottom: 0.8rem;
+}
+.service-features-list li::before { /* O "tick" da feature */
+    content: '✓';
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    color: var(--c-primary);
+    text-shadow: 0 0 8px var(--c-primary);
+}
+
+/* Footer e Botões */
+.service-tier-footer {
+    margin-top: auto;
+}
+.tier-cta-button {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    text-align: center;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    color: #FFF;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+.tier-cta-button:hover {
+    background-color: rgba(10, 132, 255, 0.2);
+    border-color: var(--c-primary);
+    color: #FFF;
+}
+
+
+/* --- Estilos do Card PREMIUM --- */
+.premium-tier {
+    border-color: rgba(10, 132, 255, 0.4);
+    position: relative;
+}
+/* A Borda Pulsante */
+.premium-tier::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -1;
+    border-radius: inherit;
+    background: conic-gradient(from 180deg at 50% 50%, #00a3ff 0%, #7bd96c 50%, #00a3ff 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+ 
+}
+.premium-tier:hover::after {
+    opacity: 1;
+}
+
+@keyframes rotate-border {
+  from { transform: rotate(0deg); } to { transform: rotate(360deg); }
+}
+
+.premium-tag {
+    position: absolute;
+    top: -12px;
+    right: 25px;
+    background: linear-gradient(90deg, #00A3FF, var(--c-primary));
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 20px;
+    text-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.premium-button {
+    background: linear-gradient(90deg, #007BFF, var(--c-primary));
+    border: none;
+}
+.premium-button:hover {
+    box-shadow: 0 0 20px -5px var(--c-primary);
+}
+
+
+/* --- Responsividade --- */
+@media (max-width: 992px) {
+    .bridge-services-container {
+        grid-template-columns: 1fr;
+    }
+}
+/* ========================================================================= */
+/* ====== CSS: A VANTAGEM CRONOS (RESULTADOS) - PRO MAX ================ */
+/* ========================================================================= */
+
+#advantage-section {
+    background-color: #0A0F1A;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+}
+
+.advantage-background-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.1;
+    background-image:
+        radial-gradient(circle at 1px 1px, rgba(10, 132, 255, 0.3) 1px, transparent 0);
+    background-size: 30px 30px;
+    animation: pan-lines 60s linear infinite;
+}
+
+.advantage-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    position: relative;
+    z-index: 2;
+    margin-top: 4rem;
+}
+
+/* O Card da Vantagem */
+.advantage-card {
+    position: relative;
+    padding: 30px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease-out;
+    overflow: hidden; /* Para o efeito de brilho */
+}
+
+/* O brilho que segue o mouse */
+.advantage-card:hover {
+    border-color: rgba(10, 132, 255, 0.5);
+    transform: translateY(-5px) scale(1.02);
+}
+
+.advantage-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.advantage-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(10, 132, 255, 0.1);
+    border: 1px solid rgba(10, 132, 255, 0.2);
+}
+
+.advantage-icon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--c-primary);
+    mask-size: contain; mask-repeat: no-repeat; mask-position: center;
+    -webkit-mask-size: contain; -webkit-mask-repeat: no-repeat; -webkit-mask-position: center;
+}
+
+/* Ícones para cada pilar */
+.icon-speed { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z'/%3E%3C/svg%3E");}
+.icon-engineering { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M17.22 6.33L12.5 2h-1L6.78 6.33 2 7.82l4.33 4.2-1.02 5.66L11.5 15v8h1v-8l6.2 2.78-1.03-5.66 4.33-4.2-5.78-1.49zm-5.22 5.67c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z'/%3E%3C/svg%3E"); }
+.icon-partnership { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");}
+
+.advantage-header h3 {
+    font-size: 1.6rem;
+    color: white;
+}
+
+.advantage-body {
+    flex-grow: 1; /* Faz com que o corpo ocupe o espaço */
+    display: flex;
+    flex-direction: column;
+}
+.advantage-body p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+    flex-grow: 1; /* Ocupa o espaço disponível */
+}
+
+/* A tag no final do card */
+.advantage-tag {
+    margin-top: 1.5rem;
+    align-self: flex-start; /* Alinha a tag à esquerda */
+    background-color: rgba(10, 132, 255, 0.15);
+    color: var(--c-primary);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(10, 132, 255, 0.2);
+}
+
+/* 4. OUTRAS SEÇÕES (REUTILIZADAS)
+   Os estilos para .principles-grid, .drawback-content, e .cta-final
+   são herdados das nossas regras globais e da página "Para Empresas",
+   garantindo consistência visual em todo o site.
+--------------------------------------------------------------------*/
+
+/*
+=====================================================
+  PÁGINA SOBRE NÓS (O MANIFESTO DA SINGULARIDADE)
+  O Testamento de um Gênio.
+=====================================================
+*/
+
+/* 1. SETUP DA PÁGINA: O PALCO CELESTIAL
+-------------------------------------------------- */
+
+.about-page-active .main-header {
+    background: linear-gradient(to bottom, rgba(10, 10, 10, 0.7) 0%, rgba(10, 10, 10, 0) 100%);
+    border-bottom: none;
+    box-shadow: none;
+}
+.about-page-active .main-header .logo,
+.about-page-active .main-header .nav-links a { color: #FFF; text-shadow: 0 1px 4px rgba(0,0,0,0.6); }
+.about-page-active #hamburger-button span { background-color: #FFF; }
+
+[data-theme="light"].about-page-active .main-header {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0) 100%);
+}
+[data-theme="light"].about-page-active .main-header .logo,
+[data-theme="light"].about-page-active .main-header .nav-links a { color: var(--c-text); text-shadow: none; }
+[data-theme="light"].about-page-active #hamburger-button span { background-color: var(--c-text); }
+
+/* ========================================================================= */
+/* ==== CSS: A TESE CRONOS (SOBRE NÓS HERO) - PRO MAX ================== */
+/* ========================================================================= */
+
+#thesis-hero {
+    height: 100vh;
+    min-height: 800px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #FFF;
+    background-color: #0A0F1A; /* Fallback */
+}
+#thesis-video-bg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+}
+#thesis-video-bg video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Removemos o grayscale para permitir cor, mas escurecemos */
+    filter: brightness(0.6);
+}
+
+/* O overlay substitui a vinheta de box-shadow, sendo mais suave */
+#thesis-hero .hero-bg-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background: radial-gradient(ellipse 60% 70% at 50% 50%, transparent 0%, #0A0F1A 95%);
+}
+
+.thesis-content {
+    position: relative;
+    z-index: 3;
+}
+
+/* O prompt de "terminal" inicial */
+.thesis-prompt {
+    font-family: monospace;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(255, 255, 255, 0.6);
+    display: block;
+    margin-bottom: 2rem;
+    animation: fadeInSlideUp 1s ease-out 0.5s forwards;
+    opacity: 0;
+}
+
+.thesis-title {
+    font-size: clamp(3.5rem, 8vw, 7rem); /* Levemente ajustado para o novo texto */
+    line-height: 1.1;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.thesis-title .line {
+    display: block;
+    overflow: hidden;
+}
+/* Reutilizando a ótima animação que você já tinha */
+.thesis-title .line > span {
+    display: block;
+    transform: translateY(110%);
+    animation: reveal-title 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 0.8s;
+}
+.thesis-title .line:last-of-type > span {
+    animation-delay: 1s;
+}
+
+/* Animação de brilho/glitch para as palavras-chave */
+.thesis-title .highlight-main,
+.thesis-title .highlight-alt {
+    display: inline-block;
+    animation: text-glitch-glow 4s infinite ease-in-out;
+}
+.thesis-title .highlight-alt {
+    animation-delay: -2s; /* Des sincroniza as animações */
+}
+
+@keyframes text-glitch-glow {
+    0%, 100% {
+        text-shadow: 0 0 10px, 0 0 20px;
+        opacity: 1;
+    }
+    25% {
+        text-shadow: 0 0 15px, 0 0 30px, 0 0 2px rgba(255,255,255,0.5);
+        opacity: 0.9;
+    }
+    50% {
+        text-shadow: 0 0 10px, 0 0 25px;
+        opacity: 1;
+    }
+     75% {
+        text-shadow: 0 0 12px, 0 0 28px, 0 0 5px rgba(255,255,255,0.2);
+        opacity: 0.95;
+    }
+}
+/* Cores aplicadas à animação. Já devem existir no seu CSS. */
+.highlight-main { color: var(--c-primary); }
+.highlight-alt { color: #2ECC71; }
+
+
+.thesis-subtitle {
+    font-size: clamp(1.2rem, 3vw, 1.6rem);
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 1.5rem;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInSlideUp 1s ease-out 2s forwards;
+}
+
+/* Animações genéricas reutilizadas */
+@keyframes reveal-title { to { transform: translateY(0); } }
+@keyframes fadeInSlideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* ========================================================================= */
+/* === CSS: O DOSSIÊ DO ARQUITETO (FUNDADOR) - PRO MAX ================= */
+/* ========================================================================= */
+
+#founder-dossier-section {
+    background-color: #0d1117; /* Mesmo fundo escuro/azulado da seção de resultados */
+    color: #FFF;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+}
+
+#founder-dossier-section .blueprint-background {
+    /* Herda o estilo já criado, garantindo consistência */
+}
+
+.founder-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+    gap: 4rem;
+    position: relative;
+    z-index: 2;
+}
+
+
+/* --- Coluna da Esquerda: A Narrativa --- */
+.founder-narrative {
+    text-align: left;
+}
+.narrative-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: #FFF;
+}
+.founder-narrative p {
+    font-size: 1.1rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+}
+.founder-narrative p strong {
+    color: var(--c-primary);
+    font-weight: 600;
+}
+.mission-statement {
+    margin-top: 2rem;
+    padding-left: 1.5rem;
+    border-left: 3px solid var(--c-primary);
+    font-style: italic;
+}
+.mission-statement p {
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.85);
+}
+
+
+/* --- Coluna da Direita: O Card do Dossiê --- */
+.founder-profile-card {
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(13, 17, 23, 0.7);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.founder-profile-card:hover {
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    border-color: rgba(10, 132, 255, 0.4);
+}
+.profile-card-header {
+    padding: 0.75rem 1.25rem;
+    background-color: rgba(255,255,255,0.05);
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--c-primary);
+}
+.profile-card-body {
+    padding: 1.5rem;
+    text-align: center;
+}
+.profile-image-wrapper {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 1.5rem auto;
+    border-radius: 50%;
+    border: 2px solid rgba(10, 132, 255, 0.5);
+    padding: 6px;
+}
+.profile-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+/* Efeito de scanline animado sobre a foto */
+.image-scanline-effect {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: linear-gradient(
+        to bottom,
+        rgba(10, 132, 255, 0) 0%,
+        rgba(10, 132, 255, 0.2) 49.5%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(10, 132, 255, 0.2) 50.5%,
+        rgba(10, 132, 255, 0) 100%
+    );
+    opacity: 0.4;
+    animation: scan 4s linear infinite;
+}
+@keyframes scan {
+    from { background-position-y: 100px; }
+    to { background-position-y: -100px; }
+}
+
+.profile-details h3 {
+    font-size: 1.8rem;
+    color: #FFF;
+}
+.profile-details span {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+.profile-attributes {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+.attribute {
+    font-size: 0.8rem !important; /* !important to override the parent span style */
+    font-weight: 500;
+    background-color: rgba(10, 132, 255, 0.1);
+    color: var(--c-primary) !important;
+    padding: 5px 10px;
+    border-radius: 20px;
+    border: 1px solid rgba(10, 132, 255, 0.2);
+}
+
+/* --- Responsividade do Dossiê --- */
+@media (max-width: 992px) {
+    .founder-grid {
+        grid-template-columns: 1fr;
+    }
+    .founder-narrative {
+        text-align: center;
+        order: 2; /* Coloca a narrativa depois da imagem no mobile */
+    }
+    .mission-statement {
+        text-align: left;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 500px;
+    }
+    .founder-profile-card {
+        order: 1;
+    }
+}
+/* ========================================================================= */
+/* ===== CSS: DIRETRIZES FUNDAMENTAIS (A VISÃO) - PRO MAX ============== */
+/* ========================================================================= */
+
+#core-directives-section {
+    background-color: #0D1117;
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Reutilizando o fundo Aurora da seção de Resultados para consistência e impacto */
+#core-directives-section .aurora-background {
+    z-index: 1;
+}
+
+.directives-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem;
+    position: relative;
+    z-index: 2;
+    margin-top: 4rem;
+}
+
+.directive-card {
+    position: relative;
+    padding: 35px 30px;
+    background: rgba(13, 17, 23, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+/* Linha de energia no topo que se revela no hover */
+.directive-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--c-primary), transparent);
+    box-shadow: 0 0 15px 1px var(--c-primary);
+    opacity: 0;
+    transform: scaleX(0);
+    transition: all 0.4s ease-out;
+}
+
+.directive-card:hover {
+    transform: translateY(-8px);
+    background: rgba(37, 43, 51, 0.8);
+}
+.directive-card:hover::before {
+    opacity: 1;
+    transform: scaleX(1);
+}
+
+.directive-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.directive-icon-wrapper {
+    width: 50px;
+    height: 50px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(10, 132, 255, 0.1);
+    border: 1px solid rgba(10, 132, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.directive-icon {
+    width: 24px;
+    height: 24px;
+    background-color: var(--c-primary);
+    mask-size: contain;
+    -webkit-mask-size: contain;
+    mask-repeat: no-repeat;
+    -webkit-mask-repeat: no-repeat;
+    mask-position: center;
+    -webkit-mask-position: center;
+}
+
+/* Ícones para as diretrizes */
+.icon-time { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M13.67 5.83A9 9 0 0119.5 12a8.5 8.5 0 01-1.33 4.67l-1.42-1.42A6.5 6.5 0 0013 7.82V2.5h-2v5.82a6.5 6.5 0 00-6.18 5.68H2.5v2h2.32A6.5 6.5 0 0011 21.18v2.32h2v-2.32a6.5 6.5 0 004.67-4.17l-1.42-1.42a8.5 8.5 0 01-7.58 3.07 9 9 0 01-1.42-7.82l6-6.01zm-3.08.58L5.41 11.6a9 9 0 010-3.19z'/%3E%3C/svg%3E");}
+.icon-excellence { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9.5 13.09L4.41 8 3 9.41l5.09 5.09L9.5 13.09zm10.09-5.66l-1.41-1.41-5.66 5.66 1.41 1.41 5.66-5.66zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z'/%3E%3C/svg%3E");}
+.icon-strategy { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5.5-2.5h11v-2h-11v2zm0-4h11v-2h-11v2zm0-4h11v-2h-11v2z'/%3E%3C/svg%3E");}
+
+.directive-header h3 {
+    font-size: 1.6rem;
+    color: white;
+}
+.directive-body p {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.75);
+    line-height: 1.7;
+}
+/* ========================================================================= */
+/* === CSS: ROADMAP PARA A DOMINAÇÃO (A VISÃO FUTURA) - PRO MAX ========== */
+/* ========================================================================= */
+
+#roadmap-section {
+    background-color: #0A0F1A;
+    color: #FFF;
+    position: relative;
+    overflow-x: hidden; /* Previne scroll horizontal no mobile */
+}
+
+/* Reutilizando o fundo de grid da seção de Vantagens */
+#roadmap-section .advantage-background-grid {
+    opacity: 0.15;
+}
+
+
+.roadmap-container {
+    position: relative;
+    padding: 3rem 0;
+}
+
+/* A linha central que representa o tempo/vetor */
+.roadmap-vector-line {
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    transform: translateY(-50%);
+    height: 2px;
+    background-color: rgba(10, 132, 255, 0.2);
+    /* Seta na ponta direita da linha */
+    background-image: linear-gradient(90deg, 
+        rgba(10, 132, 255, 0.2) 0%,
+        var(--c-primary) 100%
+    );
+}
+
+.roadmap-stages {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    position: relative;
+    z-index: 2;
+    gap: 2rem;
+}
+
+.roadmap-stage {
+    position: relative;
+    padding-top: 50px;
+}
+
+/* O marcador de fase na linha do tempo */
+.stage-marker {
+    position: absolute;
+    top: -24px; left: 50%;
+    transform: translateX(-50%);
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgba(10, 132, 255, 0.4);
+    background-color: #0A0F1A; /* Mesmo do fundo da seção */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.stage-marker::after { /* O ponto interno do marcador */
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: rgba(10, 132, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+/* Estilo do Marcador da fase Atual (Presente) */
+.current-stage .stage-marker {
+    border-color: var(--c-primary);
+}
+.current-stage .stage-marker::after {
+    background-color: var(--c-primary);
+    box-shadow: 0 0 15px 2px var(--c-primary);
+    animation: pulse-core 2s infinite ease-in-out;
+}
+
+
+.stage-content {
+    text-align: center;
+    padding: 2rem;
+    border: 1px solid transparent; /* para transição */
+    border-radius: 12px;
+    background-color: rgba(13, 17, 23, 0.7);
+    backdrop-filter: blur(8px);
+    transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.roadmap-stage:hover .stage-content {
+    border-color: rgba(10, 132, 255, 0.5);
+    transform: translateY(-10px);
+}
+.roadmap-stage:hover .stage-marker::after {
+     background-color: #FFF;
+     box-shadow: 0 0 15px 2px #FFF;
+}
+
+
+.stage-label {
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: var(--c-primary);
+    font-weight: 600;
+}
+
+.stage-content h3 {
+    font-size: 1.5rem;
+    color: #FFF;
+    margin: 0.5rem 0 1rem 0;
+}
+
+.stage-content p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+}
+
+/* Responsividade para o Roadmap */
+@media (max-width: 992px) {
+    .roadmap-stages {
+        grid-template-columns: 1fr;
+    }
+    /* Gira a timeline para vertical */
+    .roadmap-vector-line {
+        left: 30px; top: 0; bottom: 0;
+        width: 2px;
+        height: auto;
+        background-image: linear-gradient(180deg, 
+            rgba(10, 132, 255, 0.2) 0%,
+            var(--c-primary) 100%
+        );
+    }
+    .roadmap-stage {
+        padding-top: 0;
+        padding-left: 80px; /* Espaço para o marcador */
+        min-height: 150px;
+    }
+    .stage-marker {
+        left: 6px; top: 50%;
+        transform: translateY(-50%);
+    }
+     .stage-content {
+        text-align: left;
+    }
+}
+/* ========================================================================= */
+/* ==== CSS: INTERFACE DE ENGAJAMENTO (CTA FINAL SOBRE NÓS) - PRO MAX === */
+/* ========================================================================= */
+
+#engagement-interface-section {
+    background-color: #0A0F1A;
+    position: relative;
+    overflow: hidden;
+    padding: 120px 2rem;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+}
+
+/* Reutilizando os estilos do outro CTA para consistência */
+#engagement-interface-section .cta-background-glow,
+#engagement-interface-section .cta-headline,
+#engagement-interface-section .cta-subheadline {
+    position: relative;
+    z-index: 1;
+}
+
+.engagement-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    max-width: 1000px;
+    margin: 4rem auto 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+/* A Célula de Ação Individual */
+.action-cell {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 2.5rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(15px);
+    transition: all 0.3s ease;
+}
+
+.action-cell:hover {
+    transform: translateY(-10px) scale(1.03);
+    border-color: rgba(10, 132, 255, 0.6);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+}
+
+.cell-header {
+    margin-bottom: 1.5rem;
+}
+.cell-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 1rem auto;
+    background-color: var(--c-primary);
+    -webkit-mask-size: contain; mask-size: contain;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    -webkit-mask-position: center; mask-position: center;
+}
+/* Ícones específicos */
+.icon-client { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 19V5H5v14h14zm0-16a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM17 17v-6h-2v6h2zm-4 0V7h-2v10h2zm-4 0v-3H7v3h2z'/%3E%3C/svg%3E");}
+.icon-partner { -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M23 12l-2.4-1.7c.1-.3.1-.7.1-1s0-.7-.1-1L23 6.6l-1.9-3.2-2.7.9c-.4-.3-.8-.5-1.2-.7L16 1h-4l-.8 2.6c-.4.2-.8.4-1.2.7l-2.7-.9-1.9 3.2 2.4 1.7c-.1.3-.1.7-.1 1s0 .7.1 1L3 17.4l1.9 3.2 2.7-.9c.4.3.8.5 1.2.7L12 23h4l.8-2.6c.4-.2.8-.4 1.2-.7l2.7.9 1.9-3.2L21 15.3c.1-.3.1-.7.1-1s0-.7-.1-1zM12 16c-2.2 0-4-1.8-4-4s1.8-4 4-4 4 1.8 4 4-1.8 4-4 4z'/%3E%3C/svg%3E");}
+.cell-header h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--c-primary);
+    letter-spacing: 0.1em;
+}
+
+.cell-body {
+    flex-grow: 1; /* Garante que os cards tenham a mesma altura */
+}
+.cell-body p {
+    color: rgba(255,255,255,0.7);
+    line-height: 1.7;
+}
+
+.cell-footer {
+    margin-top: 2rem;
+}
+.cell-cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #FFF;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #007BFF, var(--c-primary));
+    border: none;
+    transition: all 0.3s ease;
+}
+.cell-cta-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px 0px rgba(10, 132, 255, 0.7);
+}
+
+
+/* --- Responsividade da Interface --- */
+@media (max-width: 768px) {
+    #engagement-interface-section {
+        padding: 80px 1.5rem;
+    }
+    .engagement-grid {
+        grid-template-columns: 1fr;
+    };
+}
+/* RESPONSIVIDADE E TOQUES FINAIS CELESTIAIS
+-------------------------------------------------- */
+@media(max-width: 900px) {
+    .forge-container { grid-template-columns: 1fr; }
+    .forge-portrait-wrapper { order: -1; margin-bottom: 3rem; }
+    .legacy-timeline::before { left: 1rem; }
+    .legacy-event, .legacy-event:nth-child(even) { width:100%; left:0; text-align:left; padding:0 0 4rem 4rem; }
+    .legacy-event::after { right:auto; left:-2.8rem; top:-5px; }
+    .legacy-event:nth-child(even)::after { left:-2.8rem; }
+}

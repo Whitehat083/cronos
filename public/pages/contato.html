@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark"> <!-- Inicia com o tema escuro por padrão, mais coerente -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato | Cronos - Arquitetura da Influência Digital</title>
+    <meta name="description" content="Inicie o protocolo de contato com a Cronos. Este é o canal direto para a sua vantagem competitiva. Vamos arquitetar seu domínio digital.">
+    <meta name="author" content="Cronos">
+
+    <!-- Fontes e Estilos (sem alteração) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+</head>
+
+<body class="contact-page-active">
+
+    <!-- O Header continua flutuando sobre o conteúdo -->
+    <header class="main-header">
+        <nav class="container">
+            <a href="../index.html" class="logo" aria-label="Cronos Homepage">Cronos</a>
+            <ul class="nav-links">
+                <li class="nav-item dropdown">
+                    <a href="../index.html#solucoes" class="dropdown-toggle">Soluções</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="para-empresas.html">Para Empresas</a></li>
+                        <li><a href="para-voce.html">Para Você</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="../index.html#results">Resultados</a></li>
+                 <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle">Recursos</a>
+                    <ul class="dropdown-menu">
+                        <li><a href="sobre.html">Sobre Nós</a></li>
+                        <li><a href="../blog.html">Blog/Insights</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item"><a href="contato.html">Contato</a></li>
+            </ul>
+             <div class="header-controls">
+                <button id="theme-toggle" aria-label="Alternar tema claro/escuro"></button>
+                <button id="hamburger-button" aria-label="Abrir menu" aria-controls="mobile-menu">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </nav>
+        <div id="mobile-menu" aria-hidden="true">
+            <ul id="mobile-nav-links"></ul>
+        </div>
+        <div id="menu-backdrop"></div>
+    </header>
+
+    <!-- O contêiner principal da página de contato -->
+    <main class="contact-container">
+
+        <!-- ========================================================================= -->
+        <!-- ====== COLUNA ESQUERDA: TERMINAL DE COMANDO =========================== -->
+        <!-- ========================================================================= -->
+        <section class="contact-argument-terminal">
+            <div class="terminal-overlay-grid"></div> <!-- Efeito visual de fundo -->
+
+            <div class="argument-content">
+                <span class="eyebrow terminal-prompt">>_ DIRETIVA DE ENGAJAMENTO: ATIVADA</span>
+                <h1 class="fade-in" style="animation-delay: 0.2s;">A Hesitação é o Ativo do seu Concorrente.</h1>
+                <p class="fade-in" style="animation-delay: 0.4s;">Nós já provamos a tese: a aliança entre IA e expertise humana dobra o tempo. Cada momento de deliberação é uma vantagem estratégica que você entrega a quem não hesita. Este canal não é para solicitar um serviço; é para acionar a sua anomalia de mercado. O comando é seu.</p>
+                
+                <div class="mission-log-container fade-in" style="animation-delay: 0.6s;">
+                    <div class="log-header">[ LOG DE TRANSMISSÕES ANTERIORES ]</div>
+                    <div class="log-entry">
+                        <p>"A IA da Cronos prototipou nosso ecossistema em 72 horas. A equipe de engenharia o lançou em duas semanas. Chegamos ao mercado seis meses antes do previsto. Vantagem estabelecida."</p>
+                        <span>— LOG ID: 8.C4.1, FUNDADORA, AEON DYNAMICS</span>
+                    </div>
+                     <div class="log-entry">
+                        <p>"O código-fonte gerado pela IA já superava o padrão da indústria. A intervenção humana o transformou em uma fortaleza digital. A qualidade da execução é igualada apenas pelo nível do suporte contínuo."</p>
+                        <span>— LOG ID: 6.A9.3, DIRETOR DE TECNOLOGIA, CYGNUS GROUP</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- ====== COLUNA DIREITA: INTERFACE DE ENTRADA =========================== -->
+        <!-- ========================================================================= -->
+        <section class="contact-form-wrapper">
+            <div class="form-container">
+                <div class="form-header">
+                    <h3>Interface de Engajamento</h3>
+                    <p>Seus dados iniciam a simulação. Nossa equipe responderá em 1 ciclo útil.</p>
+                </div>
+                
+                <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="contact-form-v2">
+                    <div class="form-group-v2">
+                        <input type="text" id="name" name="name" required placeholder=" ">
+                        <label for="name">Nome Completo</label>
+                    </div>
+                     <div class="form-group-v2">
+                        <input type="email" id="email" name="email" required placeholder=" ">
+                        <label for="email">Canal de Comunicação (E-mail)</label>
+                    </div>
+                     <div class="form-group-v2">
+                        <select id="objective" name="objective" required>
+                            <option value="" disabled selected>Objetivo Principal</option>
+                            <option value="landing-page-pessoal">Marca Pessoal / Landing Page</option>
+                            <option value="site-corporativo">Site Corporativo / Institucional</option>
+                            <option value="ecommerce">E-commerce / Loja Virtual</option>
+                            <option value="solucao-customizada">Web App / Solução Customizada</option>
+                            <option value="branding-estrategia">Branding & Estratégia de Marca</option>
+                        </select>
+                        <label for="objective">Objetivo Principal</label>
+                    </div>
+                     <div class="form-group-v2 full-width">
+                        <textarea id="vision" name="vision" rows="5" required placeholder=" "></textarea>
+                        <label for="vision">Descreva sua Missão</label>
+                    </div>
+                     <div class="form-group-v2 full-width submit-group">
+                         <button type="submit" class="submit-button">Transmitir Dados</button>
+                    </div>
+                </form>
+            </div>
+             <div class="contact-page-footer">
+                <p>A confidencialidade dos seus dados é garantida pelo protocolo de segurança Cronos.</p>
+                <p>Canal alternativo: <a href="mailto:cloutadress@gmail.com">cloutadress@gmail.com</a></p>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Scripts (sem alteração) -->
+    <script src="../assets/js/main.js"></script>
+</body>
+</html>
