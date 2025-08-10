@@ -1390,17 +1390,6 @@ main {
         flex-shrink: 0;
     }
     
-    .step-number { font-size: 2rem; }
-    
-    .step-content {
-        /* Já não precisamos de regras específicas aqui, pois o flex-direction no pai resolveu */
-    }
-    
-    .step-content h4 { font-size: 1.4rem; margin-bottom: 0.75rem; }
-    .step-content p { font-size: 1rem; }
-
-    /* MANTENHA SUAS OUTRAS REGRAS AQUI, como .process-step:hover */
-    .process-step:hover { transform: translateY(-5px); } /* Ajusta a animação para o novo contexto */
 }
 
 
