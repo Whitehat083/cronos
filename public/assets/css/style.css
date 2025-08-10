@@ -1378,55 +1378,6 @@ main {
         gap: 20px;
     }
 
-    /* Agora, estilizamos o interior de CADA passo DENTRO da timeline */
-     .process-timeline-ai .process-step {
-        display: flex;
-        flex-direction: column;
-        align-items: center;   
-        text-align: center;     
-        padding: 30px 25px;
-
-        /* CORREÇÃO PARA A LARGURA */
-        flex-basis: auto; /* Reseta a base do flexbox para permitir que cresça */
-        width: 100%;      /* Força o card a ocupar 100% da largura disponível */
-    }
-    .process-timeline-ai .step-icon-wrapper {
-        margin: 0 0 1.5rem 0; /* Remove margens laterais e adiciona espaçamento inferior */
-        width: 80px;
-        height: 80px;
-        flex-shrink: 0;
-    }
-    
-    .process-timeline-ai .step-number { font-size: 2rem; }
-    .process-timeline-ai .step-content h4 { font-size: 1.4rem; margin-bottom: 0.75rem; }
-    .process-timeline-ai .step-content p { font-size: 1rem; }
-    
-    /* Ajuste no conector para o layout de coluna */
-    .process-connector {
-        flex-grow: 0;
-        height: 60px;
-        width: 2px;
-        align-self: center;
-        margin: 10px 0;
-    }
-    .process-connector::before {
-        width: 2px; height: 100%;
-        background: linear-gradient(180deg, transparent, var(--c-primary), transparent);
-        transform: translateY(-100%);
-        animation-name: data-flow-vertical;
-    }
-
-    @keyframes data-flow-vertical {
-        0% { transform: translateY(-100%); }
-        100% { transform: translateY(100%); }
-    }
-
-
-    /* --- Garantindo que a Seção de Bifurcação Fique Intacta --- */
-    
-    .path-choices-grid {
-        grid-template-columns: 1fr; /* Esta regra empilha os DOIS cards, mas não mexe no layout INTERNO deles */
-    }
     
 }
 
