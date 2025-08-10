@@ -1370,10 +1370,39 @@ main {
 
 /* Responsividade da Bifurcação */
 @media (max-width: 768px) {
-    .path-choices-grid {
-        grid-template-columns: 1fr;
+  .process-step {
+        /* MUDANÇA PRINCIPAL: De 'flex-start' (linha) para 'column' (coluna) */
+        display: flex;
+        flex-direction: column; /* <<< Esta é a linha mais importante */
+        align-items: center;    /* <<< Centraliza tudo horizontalmente */
+        text-align: center;     /* <<< Garante que o texto fique centralizado */
+        gap: 0; /* Reseta o gap para controle manual */
+        
+        padding: 30px 25px; /* Ajusta o padding para o novo layout */
     }
+    
+    .step-icon-wrapper {
+        margin: 0; 
+        /* ADIÇÃO: Adiciona uma margem inferior para separar o ícone do texto */
+        margin-bottom: 1.5rem; /* <<< Espaçamento entre o ícone e o título */
+        width: 80px;  /* Pode ajustar o tamanho para mobile */
+        height: 80px;
+        flex-shrink: 0;
+    }
+    
+    .step-number { font-size: 2rem; }
+    
+    .step-content {
+        /* Já não precisamos de regras específicas aqui, pois o flex-direction no pai resolveu */
+    }
+    
+    .step-content h4 { font-size: 1.4rem; margin-bottom: 0.75rem; }
+    .step-content p { font-size: 1rem; }
+
+    /* MANTENHA SUAS OUTRAS REGRAS AQUI, como .process-step:hover */
+    .process-step:hover { transform: translateY(-5px); } /* Ajusta a animação para o novo contexto */
 }
+
 
 /* --- Configuração Principal da Seção --- */
 #process {
