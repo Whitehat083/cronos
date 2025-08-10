@@ -1385,6 +1385,8 @@ main {
         align-items: center;    /* Centraliza-os */
         text-align: center;     /* Centraliza o texto */
         padding: 30px 25px;
+         flex-basis: auto; /* Reseta a base do flexbox para permitir que cresça */
+        width: 100%; 
     }
     
     .process-timeline-ai .step-icon-wrapper {
