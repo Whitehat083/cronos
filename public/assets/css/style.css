@@ -3571,6 +3571,12 @@ main {
     max-height: 20rem; /* Uma altura máxima generosa para caber os itens */
     padding-bottom: 0.5rem; /* Espaçamento interno na parte inferior */
   }
+
+  
+  /* NOVO: ELEVA O ITEM DE MENU ATIVO */
+  #mobile-nav-links .nav-item.dropdown.open {
+    z-index: 2; /* << 2. ADICIONE APENAS ESTA NOVA REGRA. */
+  }
   
   /* Estilo dos itens e links dentro do submenu */
   #mobile-nav-links .dropdown-menu li {
