@@ -9,31 +9,31 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- MÓDULO 1: SELETOR DE TEMA ---
+   - MÓDULO 1: SELETOR DE TEMA (COM PADRÃO ESCURO) ---
     function initThemeToggle() {
         const themeToggle = document.getElementById('theme-toggle');
-        if (!themeToggle) return; // Se o botão não existir, não faz nada.
+        if (!themeToggle) return;
 
         const htmlElement = document.documentElement;
         
-        // Aplica o tema salvo no navegador ou o padrão do sistema
         const applyTheme = (theme) => {
             htmlElement.setAttribute('data-theme', theme);
-            localStorage.setItem('cronos-theme', theme); // Salva a preferência
+            localStorage.setItem('cronos-theme', theme);
         };
 
+        // CORREÇÃO ESTÁ AQUI: A lógica para determinar o tema inicial foi simplificada.
         const savedTheme = localStorage.getItem('cronos-theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        // Usa o tema salvo, ou o do sistema, ou 'dark' como fallback.
-        applyTheme(savedTheme || (prefersDark ? 'dark' : 'light')); 
+        
+        // Use o tema salvo. Se não houver, use 'dark' como padrão. Fim da história.
+        applyTheme(savedTheme || 'dark'); 
 
+        // O restante da função permanece igual, permitindo que o usuário troque o tema.
         themeToggle.addEventListener('click', () => {
             const currentTheme = htmlElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             applyTheme(newTheme);
         });
     }
-
     // --- MÓDULO 2: HEADER COM EFEITO DE SCROLL ---
     function initStickyHeader() {
         const header = document.querySelector('.main-header');
