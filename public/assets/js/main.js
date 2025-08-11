@@ -9,7 +9,7 @@
  */
 document.addEventListener('DOMContentLoaded', () => {
 
-   - MÓDULO 1: SELETOR DE TEMA (COM PADRÃO ESCURO) ---
+   // * MÓDULO 1: SELETOR DE TEMA (COM PADRÃO ESCURO) 
     function initThemeToggle() {
         const themeToggle = document.getElementById('theme-toggle');
         if (!themeToggle) return;
