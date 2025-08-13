@@ -1725,12 +1725,20 @@ main {
     flex-direction: column;
     gap: 20vh; /* Espaçamento grande entre os passos para dar scroll */
     padding: 25vh 0; /* Espaço extra no topo e no final da rolagem */
+     position: relative; /* Contexto para efeitos de linha */
 }
+
+/* --- Estilo de Cada Bloco de Texto --- */
 
 .narrative-step {
-    max-width: 500px; /* Limita a largura do texto para legibilidade */
+    max-width: 500px;
+    padding: 1.5rem 0;
+    border-top: 1px solid transparent; /* Para transição suave */
+    
+    /* Faz o texto "acender" conforme ele rola */
+    opacity: 0.3;
+    transition: opacity 0.4s ease, border-color 0.4s ease;
 }
-
 /* ========================================================================= */
 /* === PASSO 2: ESTILO VISUAL DA SEÇÃO "A DOBRA TEMPORAL" ============== */
 /* ========================================================================= */
@@ -1743,18 +1751,9 @@ main {
 /* (O wrapper do passo 1 já está bem configurado) */
 
 /* O Canvas (AGORA ESTILIZADO) */
-#hourglass-canvas {
-    width: 100%;
-    height: 100%;
-    /* Adicionaremos a ampulheta e as partículas via JS. O CSS só prepara o palco. */
-}
+
 
 /* --- A Coluna de Texto --- */
-
-.narrative-column {
-    /* (A estrutura do passo 1 já está bem configurada) */
-    position: relative; /* Contexto para efeitos de linha */
-}
 
 /* NOVO: Linha guia sutil que acompanha a rolagem */
 .narrative-column::before {
@@ -1772,18 +1771,6 @@ main {
     );
 }
 
-
-/* --- Estilo de Cada Bloco de Texto --- */
-
-.narrative-step {
-    max-width: 500px;
-    padding: 1.5rem 0;
-    border-top: 1px solid transparent; /* Para transição suave */
-    
-    /* Faz o texto "acender" conforme ele rola */
-    opacity: 0.3;
-    transition: opacity 0.4s ease, border-color 0.4s ease;
-}
 
 .narrative-step.active {
     /* (Classe a ser adicionada pelo JavaScript no Passo 3) */
