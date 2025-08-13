@@ -1673,6 +1673,180 @@ main {
     margin: 0 auto 2.5rem;
 }
 
+/* ========================================================================= */
+/* === PASSO 1: FUNDAÇÃO DA SEÇÃO "A DOBRA TEMPORAL" =================== */
+/* ========================================================================= */
+
+/* --- Container Principal da Seção --- */
+#time-warp-section {
+    position: relative;
+    background-color: #0A0F1A;
+    color: #FFF;
+    padding: 100px 0;
+    overflow: hidden;
+}
+
+.time-warp-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Duas colunas de tamanho igual */
+    gap: 5rem;
+    position: relative;
+}
+
+/* --- Coluna da Esquerda (Ampulheta) --- */
+.hourglass-column {
+    position: relative;
+    /* Define uma altura mínima para o contexto do "sticky" */
+    height: 100%;
+}
+
+.hourglass-sticky-wrapper {
+    position: sticky; /* <<<<<< A MÁGICA ACONTECE AQUI */
+    top: 50%; /* <<<<<< Centraliza na tela */
+    transform: translateY(-50%);
+    width: 100%;
+    height: 60vh; /* Altura do canvas será relativa a isso */
+    max-height: 500px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* O Canvas onde a ampulheta será desenhada (ainda sem estilo) */
+#hourglass-canvas {
+    width: 100%;
+    height: 100%;
+}
+
+
+/* --- Coluna da Direita (Texto) --- */
+.narrative-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20vh; /* Espaçamento grande entre os passos para dar scroll */
+    padding: 25vh 0; /* Espaço extra no topo e no final da rolagem */
+}
+
+.narrative-step {
+    max-width: 500px; /* Limita a largura do texto para legibilidade */
+}
+
+/* ========================================================================= */
+/* === PASSO 2: ESTILO VISUAL DA SEÇÃO "A DOBRA TEMPORAL" ============== */
+/* ========================================================================= */
+
+/* --- Estilizando a Coluna da Ampulheta --- */
+/* (Nenhuma mudança necessária aqui, apenas no wrapper e canvas) */
+
+
+/* --- O Wrapper Sticky --- */
+/* (O wrapper do passo 1 já está bem configurado) */
+
+/* O Canvas (AGORA ESTILIZADO) */
+#hourglass-canvas {
+    width: 100%;
+    height: 100%;
+    /* Adicionaremos a ampulheta e as partículas via JS. O CSS só prepara o palco. */
+}
+
+/* --- A Coluna de Texto --- */
+
+.narrative-column {
+    /* (A estrutura do passo 1 já está bem configurada) */
+    position: relative; /* Contexto para efeitos de linha */
+}
+
+/* NOVO: Linha guia sutil que acompanha a rolagem */
+.narrative-column::before {
+    content: '';
+    position: absolute;
+    left: -2.5rem; /* Posição à esquerda do texto */
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+        to bottom, 
+        rgba(10, 132, 255, 0),
+        rgba(10, 132, 255, 0.4),
+        rgba(10, 132, 255, 0)
+    );
+}
+
+
+/* --- Estilo de Cada Bloco de Texto --- */
+
+.narrative-step {
+    max-width: 500px;
+    padding: 1.5rem 0;
+    border-top: 1px solid transparent; /* Para transição suave */
+    
+    /* Faz o texto "acender" conforme ele rola */
+    opacity: 0.3;
+    transition: opacity 0.4s ease, border-color 0.4s ease;
+}
+
+.narrative-step.active {
+    /* (Classe a ser adicionada pelo JavaScript no Passo 3) */
+    opacity: 1;
+    border-top-color: rgba(10, 132, 255, 0.2);
+}
+
+.narrative-step h3 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    
+    /* Título com brilho sutil */
+    color: #FFF;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+.narrative-step.active h3 {
+    /* O texto principal do título ganha a cor da marca quando ativo */
+    color: var(--c-primary);
+    text-shadow: 0 0 15px var(--c-primary);
+}
+
+
+.narrative-step p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.8;
+}
+.narrative-step.active p {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+
+/* --- Responsividade da Seção --- */
+@media (max-width: 992px) {
+    .time-warp-container {
+        grid-template-columns: 1fr; /* Mudar para uma única coluna */
+        gap: 2rem;
+    }
+    
+    .hourglass-column {
+        height: 40vh; /* Altura fixa para a ampulheta no topo */
+        max-height: 350px;
+    }
+
+    .hourglass-sticky-wrapper {
+        position: relative; /* Anula o 'sticky' no mobile */
+        top: auto;
+        transform: none; /* Anula a centralização vertical */
+        height: 100%;
+    }
+
+    .narrative-column {
+        gap: 3rem; /* Diminui o espaço entre os textos */
+        padding: 0;
+        text-align: center;
+    }
+    .narrative-column::before {
+        display: none; /* Esconde a linha guia */
+    }
+}
+
 
 /* --- O Botão de "Ignição" Final --- */
 .final-cta-button {
