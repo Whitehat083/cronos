@@ -137,131 +137,156 @@ document.addEventListener('DOMContentLoaded', () => {
 
         observer.observe(dashboardSection);
     }
+    // --- MÓDULO 5: ANIMAÇÃO INTERATIVA "O REATOR TEMPORAL" (VERSÃO LEVE) ---
+    function initHourglassAnimation() {
+        const section = document.getElementById('time-warp-section');
+        const canvas = document.getElementById('hourglass-canvas');
+        if (!canvas || !section) return;
 
- function initHourglassAnimation() {
-    const section = document.getElementById('time-warp-section');
-    const canvas = document.getElementById('hourglass-canvas');
-    if (!canvas || !section) return;
-
-    const narrativeSteps = section.querySelectorAll('.narrative-step');
-    const ctx = canvas.getContext('2d');
-
-    let width, height;
-    let particles = [];
-    const numParticles = 3000;
-    let animationProgress = 0;
-
-    const particleColor = 'rgba(123, 217, 108, 0.7)';
-    const hourglassColor = 'rgba(255, 255, 255, 0.4)';
-
-    function resizeCanvas() {
-        const ratio = window.devicePixelRatio || 1;
-        width = canvas.clientWidth;
-        height = canvas.clientHeight;
-        canvas.width = width * ratio;
-        canvas.height = height * ratio;
-        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    }
-
-    function createParticles() {
-        particles = [];
-        const topY = height * 0.05;
-        const topHeight = height * 0.4;
-        for (let i = 0; i < numParticles; i++) {
-            particles.push({
-                x: Math.random() * (width * 0.6) + width * 0.2,
-                y: Math.random() * topHeight + topY,
-                initialY: height * 0.45
-            });
+        const narrativeSteps = section.querySelectorAll('.narrative-step');
+        const ctx = canvas.getContext('2d');
+        
+        let width, height, ratio;
+        let progress = 0; // Controlado pelo scroll (0 a 1)
+        let ripples = []; // Para a interação de clique/toque
+        
+        // Cores e Configurações de Design
+        const reactorColor = 'rgba(255, 255, 255, 0.2)';
+        const energyColor = 'var(--c-primary, rgba(123, 217, 108, 1))'; // Usa a variável CSS como fallback
+        
+        // --- 1. SETUP E REDIMENSIONAMENTO ---
+        function setup() {
+            ratio = window.devicePixelRatio || 1;
+            width = canvas.clientWidth;
+            height = canvas.clientHeight;
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+            ctx.scale(ratio, ratio); // Ajusta a escala do canvas para telas de alta densidade
+            draw();
         }
-    }
 
-    function drawHourglassPath() {
-        const topY = height * 0.05;
-        const midY = height * 0.45;
-        const bottomY = height * 0.85;
-        const leftX = width * 0.1;
-        const rightX = width * 0.9;
-        const centerX = width * 0.5;
+        // --- 2. FUNÇÕES DE DESENHO ---
 
-        ctx.beginPath();
-        ctx.moveTo(leftX, topY);
-        ctx.lineTo(centerX, midY);
-        ctx.lineTo(leftX, bottomY);
+        // Desenha a estrutura do reator (ampulheta)
+        function drawReactorFrame() {
+            ctx.strokeStyle = reactorColor;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(width * 0.1, height * 0.05);
+            ctx.lineTo(width * 0.45, height * 0.45);
+            ctx.lineTo(width * 0.1, height * 0.85);
+            ctx.moveTo(width * 0.9, height * 0.05);
+            ctx.lineTo(width * 0.55, height * 0.45);
+            ctx.lineTo(width * 0.9, height * 0.85);
+            ctx.moveTo(width * 0.1, height * 0.05);
+            ctx.lineTo(width * 0.9, height * 0.05);
+            ctx.moveTo(width * 0.1, height * 0.85);
+            ctx.lineTo(width * 0.9, height * 0.85);
+            ctx.stroke();
+        }
 
-        ctx.moveTo(rightX, topY);
-        ctx.lineTo(centerX, midY);
-        ctx.lineTo(rightX, bottomY);
-
-        ctx.moveTo(leftX, topY);
-        ctx.lineTo(rightX, topY);
-        ctx.moveTo(leftX, bottomY);
-        ctx.lineTo(rightX, bottomY);
-    }
-
-    function drawHourglass() {
-        ctx.strokeStyle = hourglassColor;
-        ctx.lineWidth = 2;
-        drawHourglassPath();
-        ctx.stroke();
-    }
-
-    function drawParticles() {
-        ctx.save();
-        // Recorta para o interior da ampulheta
-        drawHourglassPath();
-        ctx.clip();
-
-        ctx.fillStyle = particleColor;
-        particles.forEach(p => {
-            const particleProgress = (p.y - height * 0.05) / (height * 0.4);
-            if (animationProgress > particleProgress) {
-                const dropHeight = height * 0.4;
-                const accumulatedY = p.initialY + dropHeight - ((p.initialY + dropHeight - p.y) * 0.3);
+        // Desenha os núcleos de energia com base no progresso
+        function drawEnergyCores() {
+            // Núcleo Superior (energia diminui com o scroll)
+            const topRadius = (height * 0.15) * (1 - progress);
+            if (topRadius > 1) {
+                const topGradient = ctx.createRadialGradient(width / 2, height * 0.25, 0, width / 2, height * 0.25, topRadius);
+                topGradient.addColorStop(0, energyColor.replace('1)', '0.5)'));
+                topGradient.addColorStop(1, energyColor.replace('1)', '0)'));
+                ctx.fillStyle = topGradient;
                 ctx.beginPath();
-                ctx.arc(p.x, accumulatedY, 1, 0, Math.PI * 2);
-                ctx.fill();
-            } else {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+                ctx.arc(width / 2, height * 0.25, topRadius, 0, Math.PI * 2);
                 ctx.fill();
             }
-        });
 
-        ctx.restore();
+            // Núcleo Inferior (energia aumenta com o scroll)
+            const bottomRadius = (height * 0.15) * progress;
+            if (bottomRadius > 1) {
+                const bottomGradient = ctx.createRadialGradient(width / 2, height * 0.65, 0, width / 2, height * 0.65, bottomRadius);
+                bottomGradient.addColorStop(0, energyColor.replace('1)', '0.5)'));
+                bottomGradient.addColorStop(1, energyColor.replace('1)', '0)'));
+                ctx.fillStyle = bottomGradient;
+                ctx.beginPath();
+                ctx.arc(width / 2, height * 0.65, bottomRadius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Desenha as ondas de interação do clique/toque
+        function drawRipples() {
+            ripples.forEach((ripple, index) => {
+                ripple.radius += 1.5;
+                ripple.opacity -= 0.02;
+
+                if (ripple.opacity <= 0) {
+                    ripples.splice(index, 1);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+                    ctx.strokeStyle = `rgba(123, 217, 108, ${ripple.opacity})`;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            });
+        }
+        
+        // Função principal que orquestra o desenho a cada frame
+        function draw() {
+            ctx.clearRect(0, 0, width, height);
+            drawEnergyCores();
+            drawReactorFrame();
+            drawRipples();
+        }
+
+        // Loop de animação contínuo para as ondas (muito leve)
+        function animate() {
+            if (ripples.length > 0) {
+                draw();
+            }
+            requestAnimationFrame(animate);
+        }
+
+
+        // --- 3. LÓGICA DE INTERAÇÃO E CONTROLE ---
+
+        // Função que lida com o scroll (exatamente a mesma de antes)
+        function handleScroll() {
+            const rect = section.getBoundingClientRect();
+            const sectionHeight = rect.height;
+            const viewportHeight = window.innerHeight;
+            const scrollableDist = sectionHeight - viewportHeight;
+            let currentProgress = (-rect.top) / scrollableDist;
+            progress = Math.max(0, Math.min(1, currentProgress));
+            
+            const stepIndex = Math.floor(progress * (narrativeSteps.length - 0.01));
+            narrativeSteps.forEach((step, index) => {
+                step.classList.toggle('active', index === stepIndex);
+            });
+            
+            draw(); // Redesenha o canvas com o novo progresso
+        }
+        
+        // Função para criar uma "onda" no ponto do clique/toque
+        function createRipple(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = (e.clientX || e.touches[0].clientX) - rect.left;
+            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+
+            ripples.push({ x, y, radius: 0, opacity: 1 });
+        }
+
+
+        // --- 4. INICIALIZAÇÃO E EVENT LISTENERS ---
+        
+        setup();
+        animate(); // Inicia o loop de animação
+        
+        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('resize', setup);
+        
+        canvas.addEventListener('click', createRipple);
+        canvas.addEventListener('touchstart', createRipple, { passive: true });
     }
-
-    function draw() {
-        ctx.clearRect(0, 0, width, height);
-        drawHourglass();
-        drawParticles();
-    }
-
-    function handleScroll() {
-        const rect = section.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const scrollableDist = Math.max(1, rect.height - viewportHeight);
-        const progress = (-rect.top) / scrollableDist;
-        animationProgress = Math.max(0, Math.min(1, progress));
-
-        const stepIndex = Math.floor(animationProgress * (narrativeSteps.length - 0.01));
-        narrativeSteps.forEach((step, index) => {
-            step.classList.toggle('active', index === stepIndex);
-        });
-
-        requestAnimationFrame(draw);
-    }
-
-    function setup() {
-        resizeCanvas();
-        createParticles();
-        draw();
-    }
-
-    setup();
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', setup);
-}
 
 
 
