@@ -1834,6 +1834,99 @@ main {
     }
 }
 
+/* ========================================================================= */
+/* ====== PASSO 2: CSS PARA A SEÇÃO "SUPER CÉREBRO" ==================== */
+/* ========================================================================= */
+
+/* --- 1. Estrutura Principal da Seção --- */
+#ia-brain-section {
+    position: relative; /* Contexto para o posicionamento absoluto do canvas e do texto */
+    height: 90vh; /* Altura generosa para dar espaço à animação */
+    min-height: 700px;
+    width: 100%;
+    display: flex; /* Para centralizar o conteúdo */
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* Garante que nenhum efeito vaze para fora */
+    background-color: #0A0F1A; /* Fundo escuro base */
+    color: #FFF;
+    border-top: 1px solid rgba(13, 160, 255, 0.2);
+}
+
+/* --- 2. Canvas de Animação (ficará no fundo) --- */
+#plasma-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1; /* Camada mais baixa */
+}
+
+/* --- 3. Container do Conteúdo de Texto --- */
+.brain-content-container {
+    position: relative; /* Garante que o texto fique acima do canvas */
+    z-index: 2; /* Camada acima da animação */
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.brain-text-content {
+    /* Estilo "Glassmorphism" para o painel de texto */
+    padding: 3rem 4rem;
+    background-color: rgba(10, 15, 26, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* --- 4. Estilo do Título e Destaques --- */
+.brain-headline {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+/* O texto em destaque "super cérebro" */
+.highlight-superbrain {
+    display: block; /* Garante que ele tenha seu próprio espaço */
+    color: var(--c-primary);
+    text-shadow: 0 0 20px var(--c-primary), 0 0 40px var(--c-primary);
+    margin: 0.5rem 0;
+}
+
+/* O subtítulo "A IA." */
+.sub-headline {
+    display: block;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+
+/* --- 5. Responsividade --- */
+@media (max-width: 768px) {
+    #ia-brain-section {
+        height: 80vh;
+        min-height: 600px;
+    }
+
+    .brain-text-content {
+        padding: 2rem;
+        /* Remove o efeito de vidro em telas menores para performance e legibilidade */
+        background-color: transparent;
+        border: none;
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        box-shadow: none;
+    }
+}
+
 
 /* --- O Botão de "Ignição" Final --- */
 .final-cta-button {

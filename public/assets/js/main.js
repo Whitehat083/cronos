@@ -303,6 +303,187 @@ function initHourglassAnimation() {
         canvas.addEventListener('touchstart', createRipple, { passive: true });
     }, 100);
 }
+
+// ========================================================================= //
+// ====== PASSO 3: JAVASCRIPT PARA A ANIMAÇÃO "SUPER CÉREBRO" ========== //
+// ========================================================================= //
+
+/**
+ * MÓDULO 6: Animação Interativa da Bola de Plasma
+ * Cria um efeito de bola de plasma que reage ao cursor do mouse e ao toque.
+ */
+function initPlasmaBallAnimation() {
+    const canvas = document.getElementById('plasma-canvas');
+    if (!canvas) {
+        return; // Se o canvas não existir nesta página, não faz nada.
+    }
+
+    const ctx = canvas.getContext('2d');
+    let width, height, ratio;
+    
+    // Objeto para rastrear a posição do mouse ou do toque
+    const pointer = {
+        x: window.innerWidth / 2,
+        y: window.innerHeight / 2,
+        isOver: false
+    };
+
+    // --- SETUP E REDIMENSIONAMENTO DO CANVAS ---
+    function setup() {
+        ratio = window.devicePixelRatio || 1;
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
+        ctx.scale(ratio, ratio);
+    }
+
+    // --- LÓGICA DE INTERAÇÃO (MOUSE E TOQUE) ---
+    canvas.addEventListener('mouseenter', () => {
+        pointer.isOver = true;
+    });
+    canvas.addEventListener('mouseleave', () => {
+        pointer.isOver = false;
+    });
+    canvas.addEventListener('mousemove', (event) => {
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = event.clientX - rect.left;
+        pointer.y = event.clientY - rect.top;
+    });
+    canvas.addEventListener('touchmove', (event) => {
+        event.preventDefault(); // Previne o scroll da página ao tocar no canvas
+        const rect = canvas.getBoundingClientRect();
+        pointer.x = event.touches[0].clientX - rect.left;
+        pointer.y = event.touches[0].clientY - rect.top;
+        pointer.isOver = true;
+    }, { passive: false });
+    canvas.addEventListener('touchend', () => {
+        pointer.isOver = false;
+    });
+
+
+    // --- LÓGICA DA ANIMAÇÃO DO PLASMA ---
+    class LightningBolt {
+        constructor(startX, startY, numSegments) {
+            this.startX = startX;
+            this.startY = startY;
+            this.numSegments = numSegments;
+            this.segments = [];
+            this.alpha = 0; // Começa invisível
+            this.life = 0;
+            this.maxLife = Math.random() * 50 + 50; // Vida útil aleatória
+
+            // Propriedades de oscilação para dar o efeito "elétrico"
+            this.waviness = 0.5;
+            this.angle = Math.random() * Math.PI * 2;
+            this.speed = 0.01 + Math.random() * 0.02;
+
+            for (let i = 0; i < numSegments; i++) {
+                this.segments.push({ x: startX, y: startY });
+            }
+        }
+
+        update() {
+            this.life++;
+            // Efeito de fade-in e fade-out
+            this.alpha = Math.sin((this.life / this.maxLife) * Math.PI); 
+
+            // Se o ponteiro estiver fora, os raios vão para as bordas aleatoriamente
+            let targetX = pointer.isOver ? pointer.x : this.startX + Math.sin(this.angle) * width;
+            let targetY = pointer.isOver ? pointer.y : this.startY + Math.cos(this.angle) * height;
+
+            // O primeiro segmento sempre está no centro
+            this.segments[0] = { x: this.startX, y: this.startY };
+
+            // Calcula a posição dos outros segmentos em direção ao alvo
+            for (let i = 1; i < this.numSegments; i++) {
+                const prev = this.segments[i - 1];
+                const dx = targetX - prev.x;
+                const dy = targetY - prev.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const step = dist / (this.numSegments - i);
+
+                const currentAngle = Math.atan2(dy, dx);
+                
+                // Adiciona a "tremida" elétrica
+                const wiggle = Math.sin(Date.now() * 0.01 * i) * (dist * 0.1) * this.waviness;
+
+                this.segments[i].x = prev.x + Math.cos(currentAngle) * step + Math.cos(currentAngle + Math.PI/2) * wiggle;
+                this.segments[i].y = prev.y + Math.sin(currentAngle) * step + Math.sin(currentAngle + Math.PI/2) * wiggle;
+            }
+
+            // Aumenta o ângulo para o próximo ciclo (se não estiver interagindo)
+            this.angle += this.speed;
+        }
+
+        draw(context) {
+            if (this.alpha <= 0) return;
+            context.beginPath();
+            context.moveTo(this.segments[0].x, this.segments[0].y);
+            context.lineCap = 'round';
+            context.lineJoin = 'round';
+
+            for (let i = 1; i < this.numSegments; i++) {
+                context.lineTo(this.segments[i].x, this.segments[i].y);
+            }
+            
+            // Desenha com um efeito de brilho
+            context.strokeStyle = `rgba(123, 217, 108, ${this.alpha * 0.8})`;
+            context.lineWidth = 1;
+            context.shadowColor = `rgba(123, 217, 108, ${this.alpha})`;
+            context.shadowBlur = 10;
+            context.stroke();
+            context.shadowBlur = 0; // Reseta o brilho
+        }
+    }
+
+    // --- INICIALIZAÇÃO E LOOP DE ANIMAÇÃO ---
+    
+    let bolts = [];
+    const numBolts = 20; // Número de raios
+    
+    function initBolts() {
+        bolts = [];
+        for (let i = 0; i < numBolts; i++) {
+            bolts.push(new LightningBolt(width / 2, height / 2, 20));
+        }
+    }
+
+    function animate() {
+        // Limpa o canvas com um leve "rastro" para dar um efeito mais suave
+        ctx.fillStyle = 'rgba(10, 21, 26, 0.2)';
+        ctx.fillRect(0, 0, width, height);
+
+        // Desenha o orbe central pulsante
+        const pulse = 10 + Math.sin(Date.now() * 0.002) * 3;
+        const gradient = ctx.createRadialGradient(width/2, height/2, 0, width/2, height/2, pulse);
+        gradient.addColorStop(0, 'rgba(123, 217, 108, 1)');
+        gradient.addColorStop(1, 'rgba(10, 21, 26, 0)');
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(width / 2, height / 2, pulse, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Atualiza e desenha cada raio
+        bolts.forEach(bolt => {
+            bolt.update();
+            bolt.draw(ctx);
+        });
+        
+        // Continua o loop de animação
+        requestAnimationFrame(animate);
+    }
+    
+    // Inicia tudo
+    setup();
+    initBolts();
+    animate();
+
+    window.addEventListener('resize', () => {
+        setup();
+        initBolts();
+    });
+}
    
 
 
@@ -317,6 +498,7 @@ function initHourglassAnimation() {
         initMobileMenu();
         initCounterAnimation();
         initHourglassAnimation();
+         initPlasmaBallAnimation();
     }
 
     main(); // Inicia o script.
