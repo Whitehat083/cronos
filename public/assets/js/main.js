@@ -138,138 +138,125 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(dashboardSection);
     }
 
-        // --- MÓDULO 5: ANIMAÇÃO INTERATIVA DA AMPULHETA ---
     function initHourglassAnimation() {
-        const section = document.getElementById('time-warp-section');
-        const canvas = document.getElementById('hourglass-canvas');
-        if (!canvas || !section) return;
+    const section = document.getElementById('time-warp-section');
+    const canvas = document.getElementById('hourglass-canvas');
+    if (!canvas || !section) return;
 
-        const narrativeSteps = section.querySelectorAll('.narrative-step');
-        const ctx = canvas.getContext('2d');
-        
-        let width, height;
-        let particles = [];
-        const numParticles = 3000;
-        let animationProgress = 0; // Vai de 0 a 1
+    const narrativeSteps = section.querySelectorAll('.narrative-step');
+    const ctx = canvas.getContext('2d');
 
-        // Cores (para fácil customização)
-        const particleColor = 'rgba(123, 217, 108, 0.7)'; // --c-primary com transparência
-        const hourglassColor = 'rgba(255, 255, 255, 0.2)';
+    let width, height;
+    let particles = [];
+    const numParticles = 3000;
+    let animationProgress = 0; // 0 a 1
 
-        // --- FUNÇÕES DE DESENHO E ANIMAÇÃO ---
-        
-        // 1. Setup inicial e redimensionamento do canvas
-        function setup() {
-            width = canvas.offsetWidth;
-            height = canvas.offsetHeight;
-            canvas.width = width;
-            canvas.height = height;
-            createParticles();
-            draw();
+    const particleColor = 'rgba(123, 217, 108, 0.7)';
+    const hourglassColor = 'rgba(255, 255, 255, 0.4)';
+
+    // Ajusta tamanho do canvas para alta resolução
+    function resizeCanvas() {
+        const ratio = window.devicePixelRatio || 1;
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
+        ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    function createParticles() {
+        particles = [];
+        const topY = height * 0.05;
+        const topHeight = height * 0.4;
+        for (let i = 0; i < numParticles; i++) {
+            particles.push({
+                x: Math.random() * (width * 0.6) + width * 0.2,
+                y: Math.random() * topHeight + topY,
+                initialY: height * 0.45
+            });
         }
+    }
 
-        // 2. Cria as partículas de areia na parte de cima
-        function createParticles() {
-            particles = [];
-            for (let i = 0; i < numParticles; i++) {
-                particles.push({
-                    x: Math.random() * width * 0.6 + width * 0.2,
-                    y: Math.random() * height * 0.4 + height * 0.05,
-                    initialY: height * 0.45 // Ponto onde a 'areia' acumulada começa a subir
-                });
+    function drawHourglass() {
+        ctx.strokeStyle = hourglassColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+
+        const topY = height * 0.05;
+        const midY = height * 0.45;
+        const bottomY = height * 0.85;
+        const leftX = width * 0.1;
+        const rightX = width * 0.9;
+        const centerX = width * 0.5;
+
+        ctx.moveTo(leftX, topY);
+        ctx.lineTo(centerX, midY);
+        ctx.lineTo(leftX, bottomY);
+
+        ctx.moveTo(rightX, topY);
+        ctx.lineTo(centerX, midY);
+        ctx.lineTo(rightX, bottomY);
+
+        ctx.moveTo(leftX, topY);
+        ctx.lineTo(rightX, topY);
+        ctx.moveTo(leftX, bottomY);
+        ctx.lineTo(rightX, bottomY);
+
+        ctx.stroke();
+    }
+
+    function drawParticles() {
+        ctx.fillStyle = particleColor;
+        particles.forEach(p => {
+            const particleProgress = (p.y - height * 0.05) / (height * 0.4);
+            if (animationProgress > particleProgress) {
+                const dropHeight = height * 0.4;
+                const accumulatedY = p.initialY + dropHeight - ((p.initialY + dropHeight - p.y) * 0.3);
+                ctx.beginPath();
+                ctx.arc(p.x, accumulatedY, 1, 0, Math.PI * 2);
+                ctx.fill();
+            } else {
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+                ctx.fill();
             }
-        }
-        
-        // 3. Desenha a forma da ampulheta
-      function drawHourglass() {
-    ctx.strokeStyle = hourglassColor;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
+        });
+    }
 
-    const topY = height * 0.05;
-    const midY = height * 0.45;
-    const bottomY = height * 0.85;
-    const leftX = width * 0.1;
-    const rightX = width * 0.9;
-    const centerX = width * 0.5;
+    function draw() {
+        ctx.clearRect(0, 0, width, height);
+        drawHourglass();
+        drawParticles();
+    }
 
-    // Lado esquerdo
-    ctx.moveTo(leftX, topY);
-    ctx.lineTo(centerX, midY);
-    ctx.lineTo(leftX, bottomY);
+    function handleScroll() {
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const scrollableDist = Math.max(1, rect.height - viewportHeight);
+        const progress = (-rect.top) / scrollableDist;
+        animationProgress = Math.max(0, Math.min(1, progress));
 
-    // Lado direito
-    ctx.moveTo(rightX, topY);
-    ctx.lineTo(centerX, midY);
-    ctx.lineTo(rightX, bottomY);
+        const stepIndex = Math.floor(animationProgress * (narrativeSteps.length - 0.01));
+        narrativeSteps.forEach((step, index) => {
+            step.classList.toggle('active', index === stepIndex);
+        });
 
-    // Bases (topo e fundo)
-    ctx.moveTo(leftX, topY);
-    ctx.lineTo(rightX, topY);
-    ctx.moveTo(leftX, bottomY);
-    ctx.lineTo(rightX, bottomY);
+        requestAnimationFrame(draw);
+    }
 
-    ctx.stroke();
+    function setup() {
+        resizeCanvas();
+        createParticles();
+        draw();
+    }
+
+    setup();
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', () => {
+        setup();
+    });
 }
 
-        
-        // 4. Desenha as partículas com base no progresso do scroll
-        function drawParticles() {
-            ctx.fillStyle = particleColor;
-            
-            particles.forEach(p => {
-                const particleProgress = (p.y - (height * 0.05)) / (height * 0.4); // De 0 a 1, quão fundo a partícula está
-                
-                if (animationProgress > particleProgress) {
-                    // Partícula já caiu: desenhar no monte de areia de baixo
-                    const dropHeight = height * 0.4;
-                    const accumulatedY = p.initialY + dropHeight - ((p.initialY + dropHeight - (p.y)) * 0.3);
-                    ctx.beginPath();
-                    ctx.arc(p.x, accumulatedY, 1, 0, Math.PI * 2);
-                    ctx.fill();
-                } else {
-                    // Partícula ainda não caiu: desenhar na posição original
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-            });
-        }
-        
-        // 5. Função principal de desenho
-        function draw() {
-            ctx.clearRect(0, 0, width, height);
-            drawParticles();
-            drawHourglass();
-        }
-
-        // --- LÓGICA DE CONTROLE PELO SCROLL ---
-
-        function handleScroll() {
-            const rect = section.getBoundingClientRect();
-            const sectionHeight = rect.height;
-            const viewportHeight = window.innerHeight;
-
-            // Calcula o progresso do scroll DENTRO da seção
-            const scrollableDist = sectionHeight - viewportHeight;
-            let progress = (-rect.top) / scrollableDist;
-            animationProgress = Math.max(0, Math.min(1, progress)); // Limita o valor entre 0 e 1
-
-            // Destaca o parágrafo atual
-            const stepIndex = Math.floor(animationProgress * (narrativeSteps.length - 0.01));
-            narrativeSteps.forEach((step, index) => {
-                step.classList.toggle('active', index === stepIndex);
-            });
-            
-            requestAnimationFrame(draw);
-        }
-
-        // --- INICIALIZAÇÃO E EVENT LISTENERS ---
-
-        setup(); // Desenha o estado inicial
-        window.addEventListener('scroll', handleScroll);
-        window.addEventListener('resize', setup); // Redesenha se a janela mudar de tamanho
-    }
 
 
     /**
