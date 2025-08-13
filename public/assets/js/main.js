@@ -138,154 +138,171 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(dashboardSection);
     }
 
-     // --- MÓDULO 5: ANIMAÇÃO INTERATIVA "O REATOR TEMPORAL" (VERSÃO LEVE) ---
-    function initHourglassAnimation() {
-        const section = document.getElementById('time-warp-section');
-        const canvas = document.getElementById('hourglass-canvas');
-        if (!canvas || !section) return;
+  // --- MÓDULO 5: ANIMAÇÃO INTERATIVA "O REATOR TEMPORAL" (VERSÃO LEVE) ---
+function initHourglassAnimation() {
+    const section = document.getElementById('time-warp-section');
+    const canvas = document.getElementById('hourglass-canvas');
+    if (!canvas || !section) return; // Seção não existe na página, encerra.
 
-        const narrativeSteps = section.querySelectorAll('.narrative-step');
-        const ctx = canvas.getContext('2d');
+    const narrativeSteps = section.querySelectorAll('.narrative-step');
+    const ctx = canvas.getContext('2d');
+    
+    let width, height, ratio;
+    let progress = 0; // Controlado pelo scroll (valor de 0 a 1)
+    let ripples = []; // Armazena as "ondas" de clique/toque
+
+    // Cores (para fácil customização)
+    const reactorColor = 'rgba(255, 255, 255, 0.2)';
+    const energyBaseColor = '123, 217, 108'; // Cor RGB de --c-primary para manipular a opacidade
+    
+    // --- 1. SETUP E REDIMENSIONAMENTO ---
+    function setup() {
+        ratio = window.devicePixelRatio || 1;
+        width = canvas.clientWidth;
+        height = canvas.clientHeight;
+
+        if (width === 0 || height === 0) return; // Evita erro se o canvas estiver oculto
         
-        let width, height, ratio;
-        let progress = 0; // Controlado pelo scroll (0 a 1)
-        let ripples = []; // Para a interação de clique/toque
-        
-        // Cores e Configurações de Design
-        const reactorColor = 'rgba(255, 255, 255, 0.2)';
-        const energyColor = 'var(--c-primary, rgba(123, 217, 108, 1))'; // Usa a variável CSS como fallback
-        
-        // --- 1. SETUP E REDIMENSIONAMENTO ---
-        function setup() {
-            ratio = window.devicePixelRatio || 1;
-            width = canvas.clientWidth;
-            height = canvas.clientHeight;
-            canvas.width = width * ratio;
-            canvas.height = height * ratio;
-            ctx.scale(ratio, ratio); // Ajusta a escala do canvas para telas de alta densidade
+        canvas.width = width * ratio;
+        canvas.height = height * ratio;
+        ctx.scale(ratio, ratio); // Ajusta a escala para telas de alta densidade
+        draw(); // Desenha o estado inicial
+    }
+
+    // --- 2. FUNÇÕES DE DESENHO ---
+
+    // Desenha a estrutura do reator (a "ampulheta")
+    function drawReactorFrame() {
+        ctx.strokeStyle = reactorColor;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        // Lado Esquerdo
+        ctx.moveTo(width * 0.1, height * 0.05);
+        ctx.lineTo(width * 0.45, height * 0.45);
+        ctx.lineTo(width * 0.1, height * 0.85);
+        // Lado Direito
+        ctx.moveTo(width * 0.9, height * 0.05);
+        ctx.lineTo(width * 0.55, height * 0.45);
+        ctx.lineTo(width * 0.9, height * 0.85);
+        // Bases Horizontais
+        ctx.moveTo(width * 0.1, height * 0.05);
+        ctx.lineTo(width * 0.9, height * 0.05);
+        ctx.moveTo(width * 0.1, height * 0.85);
+        ctx.lineTo(width * 0.9, height * 0.85);
+        ctx.stroke();
+    }
+
+    // Desenha os núcleos de energia que mudam com o scroll
+    function drawEnergyCores() {
+        const centerX = width / 2;
+        const topCenterY = height * 0.25;
+        const bottomCenterY = height * 0.65;
+        const maxRadius = height * 0.15;
+
+        // Núcleo Superior (energia diminui com o scroll)
+        const topRadius = maxRadius * (1 - progress);
+        if (topRadius > 1) {
+            const topGradient = ctx.createRadialGradient(centerX, topCenterY, 0, centerX, topCenterY, topRadius);
+            topGradient.addColorStop(0, `rgba(${energyBaseColor}, 0.5)`);
+            topGradient.addColorStop(1, `rgba(${energyBaseColor}, 0)`);
+            ctx.fillStyle = topGradient;
+            ctx.beginPath();
+            ctx.arc(centerX, topCenterY, topRadius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        // Núcleo Inferior (energia aumenta com o scroll)
+        const bottomRadius = maxRadius * progress;
+        if (bottomRadius > 1) {
+            const bottomGradient = ctx.createRadialGradient(centerX, bottomCenterY, 0, centerX, bottomCenterY, bottomRadius);
+            bottomGradient.addColorStop(0, `rgba(${energyBaseColor}, 0.5)`);
+            bottomGradient.addColorStop(1, `rgba(${energyBaseColor}, 0)`);
+            ctx.fillStyle = bottomGradient;
+            ctx.beginPath();
+            ctx.arc(centerX, bottomCenterY, bottomRadius, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // Anima as ondas de interação do clique/toque
+    function drawRipples() {
+        ripples.forEach((ripple, index) => {
+            ripple.radius += 1.5;   // Velocidade de expansão
+            ripple.opacity -= 0.02; // Velocidade do fade-out
+
+            // Remove a onda quando ela se torna invisível
+            if (ripple.opacity <= 0) {
+                ripples.splice(index, 1);
+            } else {
+                ctx.beginPath();
+                ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
+                ctx.strokeStyle = `rgba(${energyBaseColor}, ${ripple.opacity})`;
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        });
+    }
+    
+    // Função principal que orquestra o desenho
+    function draw() {
+        if (!ctx) return;
+        ctx.clearRect(0, 0, width, height);
+        drawEnergyCores();
+        drawReactorFrame();
+        drawRipples();
+    }
+
+    // Loop de animação contínuo (roda apenas quando necessário)
+    function animate() {
+        if (ripples.length > 0) { // Otimização: Só redesenha se houver ondas
             draw();
         }
+        requestAnimationFrame(animate);
+    }
 
-        // --- 2. FUNÇÕES DE DESENHO ---
+    // --- 3. LÓGICA DE INTERAÇÃO E CONTROLE ---
 
-        // Desenha a estrutura do reator (ampulheta)
-        function drawReactorFrame() {
-            ctx.strokeStyle = reactorColor;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(width * 0.1, height * 0.05);
-            ctx.lineTo(width * 0.45, height * 0.45);
-            ctx.lineTo(width * 0.1, height * 0.85);
-            ctx.moveTo(width * 0.9, height * 0.05);
-            ctx.lineTo(width * 0.55, height * 0.45);
-            ctx.lineTo(width * 0.9, height * 0.85);
-            ctx.moveTo(width * 0.1, height * 0.05);
-            ctx.lineTo(width * 0.9, height * 0.05);
-            ctx.moveTo(width * 0.1, height * 0.85);
-            ctx.lineTo(width * 0.9, height * 0.85);
-            ctx.stroke();
-        }
-
-        // Desenha os núcleos de energia com base no progresso
-        function drawEnergyCores() {
-            // Núcleo Superior (energia diminui com o scroll)
-            const topRadius = (height * 0.15) * (1 - progress);
-            if (topRadius > 1) {
-                const topGradient = ctx.createRadialGradient(width / 2, height * 0.25, 0, width / 2, height * 0.25, topRadius);
-                topGradient.addColorStop(0, energyColor.replace('1)', '0.5)'));
-                topGradient.addColorStop(1, energyColor.replace('1)', '0)'));
-                ctx.fillStyle = topGradient;
-                ctx.beginPath();
-                ctx.arc(width / 2, height * 0.25, topRadius, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            // Núcleo Inferior (energia aumenta com o scroll)
-            const bottomRadius = (height * 0.15) * progress;
-            if (bottomRadius > 1) {
-                const bottomGradient = ctx.createRadialGradient(width / 2, height * 0.65, 0, width / 2, height * 0.65, bottomRadius);
-                bottomGradient.addColorStop(0, energyColor.replace('1)', '0.5)'));
-                bottomGradient.addColorStop(1, energyColor.replace('1)', '0)'));
-                ctx.fillStyle = bottomGradient;
-                ctx.beginPath();
-                ctx.arc(width / 2, height * 0.65, bottomRadius, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        // Desenha as ondas de interação do clique/toque
-        function drawRipples() {
-            ripples.forEach((ripple, index) => {
-                ripple.radius += 1.5;
-                ripple.opacity -= 0.02;
-
-                if (ripple.opacity <= 0) {
-                    ripples.splice(index, 1);
-                } else {
-                    ctx.beginPath();
-                    ctx.arc(ripple.x, ripple.y, ripple.radius, 0, Math.PI * 2);
-                    ctx.strokeStyle = `rgba(123, 217, 108, ${ripple.opacity})`;
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                }
-            });
-        }
-        
-        // Função principal que orquestra o desenho a cada frame
-        function draw() {
-            ctx.clearRect(0, 0, width, height);
-            drawEnergyCores();
-            drawReactorFrame();
-            drawRipples();
-        }
-
-        // Loop de animação contínuo para as ondas (muito leve)
-        function animate() {
-            if (ripples.length > 0) {
-                draw();
-            }
-            requestAnimationFrame(animate);
-        }
-
-
-        // --- 3. LÓGICA DE INTERAÇÃO E CONTROLE ---
-
-        // Função que lida com o scroll (exatamente a mesma de antes)
-        function handleScroll() {
+    function handleScroll() {
         const rect = section.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
+        // Garante que a distância de rolagem nunca seja menor que 1 para evitar divisão por zero
         const scrollableDist = Math.max(1, rect.height - viewportHeight);
-        const progress = (-rect.top) / scrollableDist;
-        animationProgress = Math.max(0, Math.min(1, progress));
-
-        const stepIndex = Math.floor(animationProgress * (narrativeSteps.length - 0.01));
+        
+        const currentProgress = (-rect.top) / scrollableDist;
+        // Limita o valor de progresso entre 0 (topo da seção) e 1 (final da seção)
+        progress = Math.max(0, Math.min(1, currentProgress));
+        
+        // Destaca o parágrafo atual com base no progresso do scroll
+        const stepIndex = Math.floor(progress * (narrativeSteps.length - 0.001)); // Pequeno ajuste para garantir que o último item seja selecionado
         narrativeSteps.forEach((step, index) => {
             step.classList.toggle('active', index === stepIndex);
         });
+        
+        draw(); // Redesenha o canvas para refletir a nova energia dos núcleos
     }
-        
-        // Função para criar uma "onda" no ponto do clique/toque
-        function createRipple(e) {
-            const rect = canvas.getBoundingClientRect();
-            const x = (e.clientX || e.touches[0].clientX) - rect.left;
-            const y = (e.clientY || e.touches[0].clientY) - rect.top;
+    
+    function createRipple(event) {
+        const rect = canvas.getBoundingClientRect();
+        const x = (event.clientX || event.touches[0].clientX) - rect.left;
+        const y = (event.clientY || event.touches[0].clientY) - rect.top;
 
-            ripples.push({ x, y, radius: 0, opacity: 1 });
-        }
+        ripples.push({ x, y, radius: 0, opacity: 1 });
+    }
 
-
-        // --- 4. INICIALIZAÇÃO E EVENT LISTENERS ---
-        
+    // --- 4. INICIALIZAÇÃO E EVENT LISTENERS ---
+    
+    // Pequeno atraso para garantir que as dimensões do CSS sejam aplicadas
+    setTimeout(() => {
         setup();
         animate(); // Inicia o loop de animação
         
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
         window.addEventListener('resize', setup);
         
         canvas.addEventListener('click', createRipple);
         canvas.addEventListener('touchstart', createRipple, { passive: true });
-    }
-
+    }, 100);
+}
    
 
 
