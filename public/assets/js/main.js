@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(dashboardSection);
     }
 
-    function initHourglassAnimation() {
+ function initHourglassAnimation() {
     const section = document.getElementById('time-warp-section');
     const canvas = document.getElementById('hourglass-canvas');
     if (!canvas || !section) return;
@@ -149,12 +149,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let width, height;
     let particles = [];
     const numParticles = 3000;
-    let animationProgress = 0; // 0 a 1
+    let animationProgress = 0;
 
     const particleColor = 'rgba(123, 217, 108, 0.7)';
     const hourglassColor = 'rgba(255, 255, 255, 0.4)';
 
-    // Ajusta tamanho do canvas para alta resolução
     function resizeCanvas() {
         const ratio = window.devicePixelRatio || 1;
         width = canvas.clientWidth;
@@ -177,11 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function drawHourglass() {
-        ctx.strokeStyle = hourglassColor;
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-
+    function drawHourglassPath() {
         const topY = height * 0.05;
         const midY = height * 0.45;
         const bottomY = height * 0.85;
@@ -189,6 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const rightX = width * 0.9;
         const centerX = width * 0.5;
 
+        ctx.beginPath();
         ctx.moveTo(leftX, topY);
         ctx.lineTo(centerX, midY);
         ctx.lineTo(leftX, bottomY);
@@ -201,11 +197,21 @@ document.addEventListener('DOMContentLoaded', () => {
         ctx.lineTo(rightX, topY);
         ctx.moveTo(leftX, bottomY);
         ctx.lineTo(rightX, bottomY);
+    }
 
+    function drawHourglass() {
+        ctx.strokeStyle = hourglassColor;
+        ctx.lineWidth = 2;
+        drawHourglassPath();
         ctx.stroke();
     }
 
     function drawParticles() {
+        ctx.save();
+        // Recorta para o interior da ampulheta
+        drawHourglassPath();
+        ctx.clip();
+
         ctx.fillStyle = particleColor;
         particles.forEach(p => {
             const particleProgress = (p.y - height * 0.05) / (height * 0.4);
@@ -221,6 +227,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 ctx.fill();
             }
         });
+
+        ctx.restore();
     }
 
     function draw() {
@@ -252,10 +260,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setup();
     window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', () => {
-        setup();
-    });
+    window.addEventListener('resize', setup);
 }
+
 
 
 
