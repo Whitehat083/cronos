@@ -109,6 +109,14 @@ main {
     text-decoration: none;
     letter-spacing: 0.1em; /* Espaçamento sutil para um look premium */
     font-family: dmsans, sans-serif;
+    color: white;
+}
+
+.imglogo {
+    width: 60px;
+    height: 60px;
+    margin-left: 0.5rem;
+    vertical-align: middle; /* Alinha a imagem com o texto */
 }
 
 .nav-links {
