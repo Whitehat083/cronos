@@ -105,7 +105,7 @@ main {
 
 /* --- 2. LOGO E LINKS DE NAVEGAÇÃO --- */
 .logo {
-    font-size: 1.8rem;
+    font-size: 1.2rem;
     text-decoration: none;
     letter-spacing: 0.1em; /* Espaçamento sutil para um look premium */
     font-family: dmsans, sans-serif;
@@ -113,8 +113,8 @@ main {
 }
 
 .imglogo {
-    width: 60px;
-    height: 60px;
+    width: 40px;
+    height: 40px;
     margin-left: 0.5rem;
     vertical-align: middle; /* Alinha a imagem com o texto */
 }
