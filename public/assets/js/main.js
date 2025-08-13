@@ -137,7 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         observer.observe(dashboardSection);
     }
-    // --- MÓDULO 5: ANIMAÇÃO INTERATIVA "O REATOR TEMPORAL" (VERSÃO LEVE) ---
+
+     // --- MÓDULO 5: ANIMAÇÃO INTERATIVA "O REATOR TEMPORAL" (VERSÃO LEVE) ---
     function initHourglassAnimation() {
         const section = document.getElementById('time-warp-section');
         const canvas = document.getElementById('hourglass-canvas');
@@ -251,20 +252,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Função que lida com o scroll (exatamente a mesma de antes)
         function handleScroll() {
-            const rect = section.getBoundingClientRect();
-            const sectionHeight = rect.height;
-            const viewportHeight = window.innerHeight;
-            const scrollableDist = sectionHeight - viewportHeight;
-            let currentProgress = (-rect.top) / scrollableDist;
-            progress = Math.max(0, Math.min(1, currentProgress));
-            
-            const stepIndex = Math.floor(progress * (narrativeSteps.length - 0.01));
-            narrativeSteps.forEach((step, index) => {
-                step.classList.toggle('active', index === stepIndex);
-            });
-            
-            draw(); // Redesenha o canvas com o novo progresso
-        }
+        const rect = section.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const scrollableDist = Math.max(1, rect.height - viewportHeight);
+        const progress = (-rect.top) / scrollableDist;
+        animationProgress = Math.max(0, Math.min(1, progress));
+
+        const stepIndex = Math.floor(animationProgress * (narrativeSteps.length - 0.01));
+        narrativeSteps.forEach((step, index) => {
+            step.classList.toggle('active', index === stepIndex);
+        });
+    }
         
         // Função para criar uma "onda" no ponto do clique/toque
         function createRipple(e) {
@@ -288,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
         canvas.addEventListener('touchstart', createRipple, { passive: true });
     }
 
+   
 
 
 
