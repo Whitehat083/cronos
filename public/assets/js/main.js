@@ -181,27 +181,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         
         // 3. Desenha a forma da ampulheta
-        function drawHourglass() {
-            ctx.strokeStyle = hourglassColor;
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            // Lados
-            ctx.moveTo(width * 0.1, height * 0.05);
-            ctx.lineTo(width * 0.4, height * 0.45);
-            ctx.lineTo(width * 0.1, height * 0.85);
+      function drawHourglass() {
+    ctx.strokeStyle = hourglassColor;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
 
-            ctx.moveTo(width * 0.9, height * 0.05);
-            ctx.lineTo(width * 0.6, height * 0.45);
-            ctx.lineTo(width * 0.9, height * 0.85);
+    const topY = height * 0.05;
+    const midY = height * 0.45;
+    const bottomY = height * 0.85;
+    const leftX = width * 0.1;
+    const rightX = width * 0.9;
+    const centerX = width * 0.5;
 
-            // Bases (topo e fundo)
-            ctx.moveTo(width * 0.1, height * 0.05);
-            ctx.lineTo(width * 0.9, height * 0.05);
-            ctx.moveTo(width * 0.1, height * 0.85);
-            ctx.lineTo(width * 0.9, height * 0.85);
+    // Lado esquerdo
+    ctx.moveTo(leftX, topY);
+    ctx.lineTo(centerX, midY);
+    ctx.lineTo(leftX, bottomY);
 
-            ctx.stroke();
-        }
+    // Lado direito
+    ctx.moveTo(rightX, topY);
+    ctx.lineTo(centerX, midY);
+    ctx.lineTo(rightX, bottomY);
+
+    // Bases (topo e fundo)
+    ctx.moveTo(leftX, topY);
+    ctx.lineTo(rightX, topY);
+    ctx.moveTo(leftX, bottomY);
+    ctx.lineTo(rightX, bottomY);
+
+    ctx.stroke();
+}
+
         
         // 4. Desenha as partículas com base no progresso do scroll
         function drawParticles() {
