@@ -100,14 +100,15 @@ main {
     align-items: center;
 }
 
+/* ---  --  */
+
 
 /* --- 2. LOGO E LINKS DE NAVEGAÇÃO --- */
 .logo {
     font-size: 1.8rem;
-    font-weight: 700;
     text-decoration: none;
     letter-spacing: 0.1em; /* Espaçamento sutil para um look premium */
-    color: var(--c-text);
+    font-family: dmsans, sans-serif;
 }
 
 .nav-links {
